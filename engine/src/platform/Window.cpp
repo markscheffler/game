@@ -11,7 +11,7 @@
 #include <SDL3/SDL.h>
 #include <print>
 #include <engine/Log.h>
-
+#include <engine/Error.h>
 
 namespace eng {
 
@@ -26,8 +26,16 @@ Window::Window(const char* title, i32 width, i32 height) {
     // Read the return value of every SDL call. All of them can fail.
     (void)title; (void)width; (void)height;
 
+    fire::verify(SDL_Init(SDL_INIT_VIDEO), "failed to init sdl video subsystem");
+    fire::log::trace("sdl video inited");
 
+    m_window = SDL_CreateWindow(title, width, height, NULL);
+    fire::verify(m_window, "failed to create window");
+    fire::log::trace("creating window");
 
+    m_renderer = SDL_CreateRenderer(m_window, NULL);
+    fire::verify(m_renderer, "failed to create renderer");
+    fire::log::trace("creating renderer");
 }
 
 Window::~Window() {
@@ -37,12 +45,16 @@ Window::~Window() {
     // Ask yourself what happens if construction failed halfway through and
     // one of these pointers is null. Then go read what SDL does when handed
     // a null pointer, rather than guessing.
+
+    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyWindow(m_window);
+    SDL_Quit();
 }
 
 bool Window::IsValid() const {
     // TODO(week1)
-    return false;
-}
+    return m_window ? true : false;
+    }
 
 void Window::Clear(u8 r, u8 g, u8 b) {
     // TODO(week1): SDL_SetRenderDrawColor, then SDL_RenderClear.

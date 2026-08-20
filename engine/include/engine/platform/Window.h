@@ -49,6 +49,8 @@ public:
     // Temporary escape hatch so the sandbox can poll events in Week 1.
     SDL_Renderer* RawRenderer() const { return m_renderer; }
 
+    SDL_Window* GetWindow() const { return m_window; }
+    SDL_Renderer* GetRenderer() const { return m_renderer; }
 private:
     SDL_Window*   m_window   = nullptr;
     SDL_Renderer* m_renderer = nullptr;
