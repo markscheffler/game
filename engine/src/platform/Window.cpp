@@ -10,6 +10,8 @@
 #include <engine/platform/Window.h>
 #include <SDL3/SDL.h>
 #include <print>
+#include <engine/Log.h>
+
 
 namespace eng {
 
@@ -23,6 +25,9 @@ Window::Window(const char* title, i32 width, i32 height) {
     //
     // Read the return value of every SDL call. All of them can fail.
     (void)title; (void)width; (void)height;
+
+
+
 }
 
 Window::~Window() {

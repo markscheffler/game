@@ -19,8 +19,8 @@ int main(int argc, char** argv) {
     // TODO(week1): Initialize a SDL3 Window. Check if it IsValid(). Bail with a message
     // and a non-zero exit code if it failed.
 
-    bool running = true;
-    while (running) {
+    bool running = false;
+    while (!running) {
         // TODO(week1): drain the SDL event queue with SDL_PollEvent.
 		//   Set running = false on SDL_EVENT_QUIT or SDL_EVENT_WINDOW_CLOSE_REQUESTED.
 		//   Do nothing for any other event type.
@@ -28,8 +28,15 @@ int main(int argc, char** argv) {
         // Note the shape of this loop: poll until the queue is EMPTY, once per
         // frame. Handling one event per frame is a bug that looks like input
         // lag.
-
+        //
         // TODO(week1): clear to a colour of your choosing, then present.
+
+        SDL_Event event{};
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_EVENT_QUIT) running = true;
+        }
+
     }
 
     std::printf("Clean exit.\n");
