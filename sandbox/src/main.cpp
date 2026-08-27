@@ -9,11 +9,32 @@
 // =============================================================================
 
 #include <engine/platform/Window.h>
-#include <engine/Error.h>
-#include <engine/Log.h>
-#include <engine/Exception.h>
 #include <SDL3/SDL.h>
+
+//define _CRTDBG_MAP_ALLOC
 #include <print>
+
+//#ifndef ASAN
+//#define ASAN
+//#endif
+
+
+int x[100];
+#if defined(ASAN)
+int main()
+{
+#ifdef __SANITIZE_ADDRESS__
+    std::print("MSVC AddressSanitizer enabled");
+#else
+    std::print("MSVC AddressSanitizer not enabled");
+#endif
+
+
+    std::print("Hello!\n");
+    x[100] = 5; // Boom!
+    return 0;
+}
+#else
 
 int main(int argc, char** argv) {
     (void)argc; (void)argv;   // Week 1 stretch goal 3 gives these a purpose.
@@ -21,51 +42,50 @@ int main(int argc, char** argv) {
     // TODO(week1): Initialize a SDL3 Window. Check if it IsValid(). Bail with a message
     // and a non-zero exit code if it failed.
 
-    try {
-        eng::Window win("game", 640, 480);
-        fire::verify(win.IsValid(), "window is not valid");
-        fire::log::trace("window is valid");
+    eng::Window window("Rinku Sutaato!", 1280, 720);
 
+    if(!window.IsValid())
+    {
+        std::print(stderr, "Failed to create window\n");
+        return 1;
+    }
 
-        bool running = false;
-        while (!running) {
-            // TODO(week1): drain the SDL event queue with SDL_PollEvent.
-            //   Set running = false on SDL_EVENT_QUIT or SDL_EVENT_WINDOW_CLOSE_REQUESTED.
-            //   Do nothing for any other event type.
-            //
-            // Note the shape of this loop: poll until the queue is EMPTY, once per
-            // frame. Handling one event per frame is a bug that looks like input
-            // lag.
-            //
-            // TODO(week1): clear to a colour of your choosing, then present.
+    bool running = true;
+    while (running) {
+        // TODO(week1): drain the SDL event queue with SDL_PollEvent.
+		//   Set running = false on SDL_EVENT_QUIT or SDL_EVENT_WINDOW_CLOSE_REQUESTED.
+		//   Do nothing for any other event type.
+        //
+        // Note the shape of this loop: poll until the queue is EMPTY, once per
+        // frame. Handling one event per frame is a bug that looks like input
+        // lag.
 
-            SDL_Event event{};
-            while (SDL_PollEvent(&event))
+        // TODO(week1): clear to a colour of your choosing, then present.
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) 
+        {
+            switch (event.type) 
             {
-                if (event.type == SDL_EVENT_QUIT || event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) running = true;
+			    case SDL_EVENT_QUIT:
+			    case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+				    running = false;
+				    break;
+                default:
+					// Ignore other events // Do nothing
+                    break;
             }
-
-            // COPIED FROM SDL EXAMPLE
-            const double now = ((double)SDL_GetTicks()) / 1000.0;  /* convert from milliseconds to seconds. */
-            /* choose the color for the frame we will draw. The sine wave trick makes it fade between colors smoothly. */
-            const float red = (float)(0.5 + 0.5 * SDL_sin(now));
-            const float green = (float)(0.5 + 0.5 * SDL_sin(now + SDL_PI_D * 2 / 3));
-            const float blue = (float)(0.5 + 0.5 * SDL_sin(now + SDL_PI_D * 4 / 3));
-            SDL_SetRenderDrawColorFloat(win.GetRenderer(), red, green, blue, SDL_ALPHA_OPAQUE_FLOAT);  /* new color, full alpha. */
-
-            /* clear the window to the draw color. */
-            SDL_RenderClear(win.GetRenderer());
-
-            /* put the newly-cleared rendering on the screen. */
-            SDL_RenderPresent(win.GetRenderer());
-            // COPIED FROM SDL EXAMPLE
         }
 
-        std::printf("Clean exit.\n");
+		window.Clear(200, 120, 255); 
+
+        window.Present();
+
+
     }
-    catch (const fire::Exception& e)
-    {
-        std::println("ERROR: {}",e.what());
-    }
+
+    std::printf("Clean exit.\n");
     return 0;
 }
+
+#endif

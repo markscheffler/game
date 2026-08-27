@@ -10,8 +10,6 @@
 #include <engine/platform/Window.h>
 #include <SDL3/SDL.h>
 #include <print>
-#include <engine/Log.h>
-#include <engine/Error.h>
 
 namespace eng {
 
@@ -24,18 +22,25 @@ Window::Window(const char* title, i32 width, i32 height) {
     //      SDL_GetError() to stderr. Do not throw. Do not silently continue.
     //
     // Read the return value of every SDL call. All of them can fail.
-    (void)title; (void)width; (void)height;
+    
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) 
+    {
+        std::print(stderr, "Failed to initialize SDL video subsystem\n", SDL_GetError());
+        return;
+    }
 
-    fire::verify(SDL_Init(SDL_INIT_VIDEO), "failed to init sdl video subsystem");
-    fire::log::trace("sdl video inited");
+	sdl_videoInitialized = true;
 
-    m_window = SDL_CreateWindow(title, width, height, NULL);
-    fire::verify(m_window, "failed to create window");
-    fire::log::trace("creating window");
+    if (!SDL_CreateWindowAndRenderer(title, width, height, 0, &m_window, &m_renderer))
+    {
+		std::print(stderr, "Failed to create window and renderer\n", SDL_GetError());
+		
+		m_window = nullptr;
+		m_renderer = nullptr;
+        
+        return;
+    }
 
-    m_renderer = SDL_CreateRenderer(m_window, NULL);
-    fire::verify(m_renderer, "failed to create renderer");
-    fire::log::trace("creating renderer");
 }
 
 Window::~Window() {
@@ -46,23 +51,63 @@ Window::~Window() {
     // one of these pointers is null. Then go read what SDL does when handed
     // a null pointer, rather than guessing.
 
-    SDL_DestroyRenderer(m_renderer);
-    SDL_DestroyWindow(m_window);
-    SDL_Quit();
-}
-
-bool Window::IsValid() const {
-    // TODO(week1)
-    return m_window ? true : false;
+    if (m_renderer)
+    {
+        SDL_DestroyRenderer(m_renderer);
+		m_renderer = nullptr;
     }
 
-void Window::Clear(u8 r, u8 g, u8 b) {
-    // TODO(week1): SDL_SetRenderDrawColor, then SDL_RenderClear.
-    (void)r; (void)g; (void)b;
+    if (m_window)
+    {
+        SDL_DestroyWindow(m_window);
+		m_window = nullptr;
+    }
+
+    if (sdl_videoInitialized)
+    {
+        SDL_Quit();
+		sdl_videoInitialized = false;
+    }
 }
 
-void Window::Present() {
+bool Window::IsValid() const
+{
+    // TODO(week1)
+    return m_window != nullptr && m_renderer != nullptr;
+}
+
+void Window::Clear(u8 r, u8 g, u8 b)
+{
+    // TODO(week1): SDL_SetRenderDrawColor, then SDL_RenderClear.
+    if (!m_renderer) 
+    {
+        return;
+    }
+
+    if(!SDL_SetRenderDrawColor(m_renderer, r, g, b, 255))
+	{
+		std::print(stderr, "Failed to set render draw color\n", SDL_GetError());
+		return;
+	}
+
+    if (!SDL_RenderClear(m_renderer))
+    {
+		std::print(stderr, "Failed to clear renderer\n", SDL_GetError());
+    }
+}
+
+void Window::Present()
+{
     // TODO(week1): SDL_RenderPresent.
+    if (!m_renderer) 
+    {
+        return;
+    }
+    
+    if(!SDL_RenderPresent(m_renderer))
+    {
+		std::print(stderr, "Failed to present renderer\n", SDL_GetError());
+    }
 }
 
 } // namespace eng
