@@ -71,6 +71,7 @@ namespace eng {
         static thread_local char text[64];
         std::snprintf(text, sizeof(text), "ByteBuffer{ size=%zu }", buffer.Size());
         return text;
+        ///
 
     }
 
