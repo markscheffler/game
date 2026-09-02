@@ -1,113 +1,136 @@
-// =============================================================================
-//  WEEK 1 TEMPLATE - you implement this.
+// ============================================================================
+//  Window.cpp - opens and closes the game window. See Window.h.
 //
-//  Every function declared in Window.h must be defined here, or the LINKER
-//  will reject the build; not the compiler. Try it: comment out one of these
-//  definitions and read the error carefully. It will not name a line number in
-//  a source file, because there is no source line to name.
-// =============================================================================
+//  This file talks to SDL3 directly. Every SDL call's result is checked,
+//  because the failures here are the ones that happen on somebody else's
+//  machine: no display, an old graphics driver, a remote desktop session.
+// ============================================================================
 
+#include <engine/core/Log.h>
 #include <engine/platform/Window.h>
+
 #include <SDL3/SDL.h>
-#include <print>
 
 namespace eng {
 
-Window::Window(const char* title, i32 width, i32 height) {
-    // TODO(week1):
-    //   1. SDL_Init with the video subsystem.
-    //   2. Create a window and a renderer.
-    //      SDL_CreateWindowAndRenderer does both in one call - read its docs.
-    //   3. If anything fails, leave m_window/m_renderer null and log
-    //      SDL_GetError() to stderr. Do not throw. Do not silently continue.
+Window::Window(const char* title, int width, int height)
+    : m_title(title != nullptr ? title : "Engine2D") {
+
+    // Step 1: start SDL's video support.
     //
-    // Read the return value of every SDL call. All of them can fail.
-    
-    if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) 
-    {
-        std::print(stderr, "Failed to initialize SDL video subsystem\n", SDL_GetError());
+    // SDL_InitSubSystem is used instead of SDL_Init because other parts of the
+    // engine may already have started SDL for their own reasons; this turns on
+    // just the piece the window needs and leaves the rest alone.
+    if (!SDL_InitSubSystem(SDL_INIT_VIDEO)) {
+        ENGINE_LOG_ERROR(Channels::kPlatform, "could not start SDL video: {}",
+                         SDL_GetError());
+        return;   // both pointers stay null, so IsValid() will report false
+    }
+    m_videoInitialised = true;
+
+    // Step 2: create the window and its renderer.
+    //
+    // SDL_CreateWindowAndRenderer does both in one call. That is preferred
+    // over two separate calls because it also makes sure the two agree on a
+    // pixel format, which is fiddly to get right by hand.
+    SDL_Window*   rawWindow   = nullptr;
+    SDL_Renderer* rawRenderer = nullptr;
+    if (!SDL_CreateWindowAndRenderer(m_title.c_str(), width, height,
+                                     SDL_WINDOW_RESIZABLE, &rawWindow, &rawRenderer)) {
+        ENGINE_LOG_ERROR(Channels::kPlatform, "could not create the window: {}",
+                         SDL_GetError());
+
+        // One of the two may have been created before the failure. Handing
+        // whatever exists to the smart pointers means the destructor tidies it
+        // up - which is precisely what unique_ptr is for on an error path.
+        m_window.reset(rawWindow);
+        m_renderer.reset(rawRenderer);
         return;
     }
 
-	sdl_videoInitialized = true;
+    // reset() hands the raw pointer to the unique_ptr, which now owns it. From
+    // this line on, nothing has to remember to destroy them.
+    m_window.reset(rawWindow);
+    m_renderer.reset(rawRenderer);
 
-    if (!SDL_CreateWindowAndRenderer(title, width, height, 0, &m_window, &m_renderer))
-    {
-		std::print(stderr, "Failed to create window and renderer\n", SDL_GetError());
-		
-		m_window = nullptr;
-		m_renderer = nullptr;
-        
-        return;
+    // Step 3: ask for vsync, which caps drawing to the monitor's refresh rate
+    // and removes tearing. Not fatal if the driver refuses - it is a
+    // preference, not a requirement.
+    if (!SDL_SetRenderVSync(m_renderer.get(), 1)) {
+        ENGINE_LOG_WARN(Channels::kPlatform, "vsync is not available: {}",
+                        SDL_GetError());
     }
 
+    ENGINE_LOG_INFO(Channels::kPlatform, "window created: {}x{} \"{}\" (drawing with {})",
+                    width, height, m_title, SDL_GetRendererName(m_renderer.get()));
 }
 
 Window::~Window() {
-    // TODO(week1): tear down in the exact reverse of construction.
-    //   renderer, then window, then SDL_Quit().
-    //
-    // Ask yourself what happens if construction failed halfway through and
-    // one of these pointers is null. Then go read what SDL does when handed
-    // a null pointer, rather than guessing.
+    ENGINE_LOG_INFO(Channels::kPlatform, "window closed");
 
-    if (m_renderer)
-    {
-        SDL_DestroyRenderer(m_renderer);
-		m_renderer = nullptr;
+    // The member declaration order in Window.h would already do this in the
+    // right order, but it is written out explicitly so the ordering is visible
+    // to somebody reading this file on its own.
+    m_renderer.reset();
+    m_window.reset();
+
+    if (m_videoInitialised) {
+        SDL_QuitSubSystem(SDL_INIT_VIDEO);
+        m_videoInitialised = false;
     }
 
-    if (m_window)
-    {
-        SDL_DestroyWindow(m_window);
-		m_window = nullptr;
-    }
-
-    if (sdl_videoInitialized)
-    {
-        SDL_Quit();
-		sdl_videoInitialized = false;
-    }
+    // SDL_Quit() is deliberately NOT called here. Other parts of the engine
+    // also use SDL, and shutting the whole library down from this destructor
+    // would pull the floor out from under them. The engine calls SDL_Quit once
+    // at the very end of its own shutdown.
 }
 
-bool Window::IsValid() const
-{
-    // TODO(week1)
+bool Window::IsValid() const {
     return m_window != nullptr && m_renderer != nullptr;
 }
 
-void Window::Clear(u8 r, u8 g, u8 b)
-{
-    // TODO(week1): SDL_SetRenderDrawColor, then SDL_RenderClear.
-    if (!m_renderer) 
-    {
-        return;
+int Window::Width() const {
+    int w = 0;
+    int h = 0;
+    if (m_window != nullptr) {
+        SDL_GetWindowSize(m_window.get(), &w, &h);
     }
-
-    if(!SDL_SetRenderDrawColor(m_renderer, r, g, b, 255))
-	{
-		std::print(stderr, "Failed to set render draw color\n", SDL_GetError());
-		return;
-	}
-
-    if (!SDL_RenderClear(m_renderer))
-    {
-		std::print(stderr, "Failed to clear renderer\n", SDL_GetError());
-    }
+    return w;
 }
 
-void Window::Present()
-{
-    // TODO(week1): SDL_RenderPresent.
-    if (!m_renderer) 
-    {
+int Window::Height() const {
+    int w = 0;
+    int h = 0;
+    if (m_window != nullptr) {
+        SDL_GetWindowSize(m_window.get(), &w, &h);
+    }
+    return h;
+}
+
+void Window::SetTitle(const char* title) {
+    if (m_window == nullptr || title == nullptr) {
         return;
     }
-    
-    if(!SDL_RenderPresent(m_renderer))
-    {
-		std::print(stderr, "Failed to present renderer\n", SDL_GetError());
-    }
+    m_title = title;
+    SDL_SetWindowTitle(m_window.get(), m_title.c_str());
 }
+
+void Window::Clear(unsigned char r, unsigned char g, unsigned char b) {
+    if (m_renderer == nullptr) {
+        return;
+    }
+    SDL_SetRenderDrawColor(m_renderer.get(), r, g, b, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(m_renderer.get());
+}
+
+void Window::Present() {
+    if (m_renderer == nullptr) {
+        return;
+    }
+    SDL_RenderPresent(m_renderer.get());
+}
+
+void* Window::NativeWindowHandle() const   { return m_window.get(); }
+void* Window::NativeRendererHandle() const { return m_renderer.get(); }
 
 } // namespace eng
