@@ -84,6 +84,12 @@ void Engine::PresentFrame() {
 
 // The standalone game's whole loop: begin, simulate, render, present, repeat.
 void Engine::Run() {
+    while (BeginFrame())
+    {
+        Simulate();
+        RenderFrame();
+        PresentFrame();
+    }
 }
 
 } // namespace eng
