@@ -48,7 +48,7 @@
 #include <string_view>
 
 
-#include <engine/core/EngineSubsystem.h>
+//#include <engine/core/EngineSubsystem.h>
 
 
 namespace eng {
@@ -99,18 +99,19 @@ inline constexpr std::string_view kGame     = "Game";
 // The log itself. Every function is static because there is exactly one log
 // for the whole program and passing a pointer to it through every subsystem
 // would be noise.
-class Log :public EngineSubsystem{
+class Log //:public EngineSubsystem{
+{
 public:
     // Opens the log file and starts the clock that timestamps each message.
     // Pass an empty path for "terminal and Console window only", which is what
     // the unit tests want.
     static bool Init(std::string_view logFilePath, LogLevel threshold);
-    void init();
+    //void init();
     // Flushes and closes the file. The log is started first and shut down last
     // of everything in the engine, so that a subsystem can still report a
     // problem while it is being torn down.
-    void Shutdown();
-    void shutdown();
+    static void Shutdown();
+    //void shutdown();
     static bool IsInitialised();
 
     // Writes one message. The macros below call this; you normally should not.

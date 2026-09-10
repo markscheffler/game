@@ -21,6 +21,7 @@
 #include <imgui.h>
 
 #include <cstdio>
+#include <engine/core/Component_System.h>
 
 namespace editor {
 

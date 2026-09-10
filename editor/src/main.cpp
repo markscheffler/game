@@ -37,7 +37,7 @@ int BuildScriptsAndExit() {
     editor::ScriptBuild::Init();
     const editor::ScriptBuild::Result result = editor::ScriptBuild::BuildAndReload();
 
-    //eng::Log::Shutdown();
+    eng::Log::Shutdown();
     return result.ok ? 0 : 1;
 }
 

@@ -4,7 +4,7 @@
 // =============================================================================
 
 #include <engine/fs/FileSystem.h>
-
+#include <print>
 namespace eng {
 
 // Works out where the project is by starting at the program's own location and
@@ -12,22 +12,24 @@ namespace eng {
 // written to the log, because that line is the first thing to check when a file
 // will not load on somebody else's machine.
 bool FileSystem::Init() {
+    std::println("file system init");
     return false;
 }
 
-void FileSystem::init()
-{
-    std::println("filesystem subsystem init called");
-}
+//void FileSystem::init()
+//{
+//    std::println("filesystem subsystem init called");
+//}
 
 // Forgets the project location.
 void FileSystem::Shutdown() {
+    std::println("file system shutdown");
 }
 
-void FileSystem::shutdown()
-{
-    std::println("file system shutdown called");
-}
+//void FileSystem::shutdown()
+//{
+//    std::println("file system shutdown called");
+//}
 
 // The folder that was found - the one containing assets/.
 const std::string& FileSystem::AssetRoot() {

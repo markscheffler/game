@@ -20,15 +20,15 @@ Window::~Window() {
 }
 
 
-void Window::init()
-{
-    std::println("Window subsystem init called");
-}
+//void Window::init()
+//{
+//    std::println("Window subsystem init called");
+//}
 
-void Window::shutdown()
-{
-    std::println("window subsystem shutdown called");
-}
+//void Window::shutdown()
+//{
+//    std::println("window subsystem shutdown called");
+//}
 
 // Did the window actually open? Start-up stops here if it did not.
 bool Window::IsValid() const {

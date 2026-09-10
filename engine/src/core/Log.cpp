@@ -4,7 +4,7 @@
 // =============================================================================
 
 #include <engine/core/Log.h>
-
+#include <print>
 namespace eng {
 
 // Turns a level into the word the Console and the log file show.
@@ -35,25 +35,28 @@ bool initialized = false;
 LogLevel level{};
 bool Log::Init(std::string_view logFilePath, LogLevel threshold) {
    
+    std::println("logger init");
     level = threshold;
     initialized = true;
     return initialized;
 }
 
 
-void Log::init()
-{
-    std::println("log subsystem init called");
-}
-
-void Log::shutdown()
-{
-    std::println("log subsystem shutdown called");
-}
+//void log::init()
+//{
+//    std::println("log subsystem init called");
+//}
+//
+//void log::shutdown()
+//{
+//    std::println("log subsystem shutdown called");
+//}
 
 // Closes the log file. Last subsystem down, so that every other subsystem's
 // shutdown message still has somewhere to go.
 void Log::Shutdown() {
+
+    std::println("logger shutdown");
     initialized = false;
 }
 

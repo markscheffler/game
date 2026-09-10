@@ -9,6 +9,8 @@ namespace eng {
 
 // Returns the one and only engine. Created the first time it is asked for, so
 // it is guaranteed to exist before anything tries to use it.
+//static Engine instance;
+
 Engine& Engine::Get() {
     static Engine instance;
     return instance;
@@ -16,7 +18,13 @@ Engine& Engine::Get() {
 
 // Hands back the game window, so the editor can attach its interface to it.
 Window& Engine::GetWindow() {
-    return *m_window;
+    return *sm->GetWindow();
+    //return *m_window;
+}
+
+void Engine::EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown) {
+    sm->gui.init = std::move(init);
+    sm->gui.shutdown = std::move(shutdown);
 }
 
 // Builds the ordered list of subsystems. Registration order IS dependency
@@ -24,11 +32,13 @@ Window& Engine::GetWindow() {
 // EditorGui, Input, Resources, Gizmos, Messaging, Scripts, Scene, Collision.
 void Engine::RegisterBuiltinSubsystems(const Options& options) {
 
-    subsystems_manager.add<SubsystemId::LOGGER, eng::Log>()
+    /*subsystems_manager.add<SubsystemId::LOGGER, eng::Log>()
         .add<SubsystemId::FILESYSTEM, eng::FileSystem>()
-        .add<SubsystemId::WINDOW, eng::Window>();
+        .add<SubsystemId::WINDOW, eng::Window>()
+        .add<SubsystemId::RENDERER, eng::Renderer>();
 
-    subsystems_manager.start();
+    subsystems_manager.start();*/
+  
 }
 
 // Starts everything: reads the settings file, brings the subsystems up in
@@ -36,7 +46,10 @@ void Engine::RegisterBuiltinSubsystems(const Options& options) {
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
     
-    RegisterBuiltinSubsystems(options);
+    //RegisterBuiltinSubsystems(options);
+    if (options.guiInit) {
+        EditorGuiHooks(options.guiInit, options.guiShutdown);
+    }
     return true;
 }
 
@@ -97,6 +110,8 @@ void Engine::Run() {
         Simulate();
         RenderFrame();
         PresentFrame();
+       
+        
     }
 }
 

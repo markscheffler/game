@@ -16,9 +16,18 @@ bool Renderer::Init(Window& /*window*/) {
     return false;
 }
 
+//void Renderer::init()
+//{
+//    std::println("Renderer subsystems init called");
+//}
 // Lets go of the borrowed renderer.
 void Renderer::Shutdown() {
 }
+
+//void Renderer::shutdown()
+//{
+//    std::println("Renderer subysystem shutdown called");
+//}
 
 // Is there something to draw with? Everything below quietly does nothing when
 // there is not.

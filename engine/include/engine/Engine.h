@@ -56,10 +56,11 @@
 #include <engine/scene/SystemOrder.h>
 #include <engine/tools/GuiHooks.h>
 
-#include <engine/core/EngineSubsystem.h>
+//#include <engine/core/EngineSubsystem.h>
+#include <engine/core/Component_System.h>
 
 
-#include <functional>
+//#include <functional>
 #include <memory>
 #include <string>
 
@@ -157,18 +158,30 @@ public:
 
     bool IsInitialised() const { return m_initialised; }
 
-private:
-    Engine() = default;
+    Subsytem_Manager& subsystems() { return *sm; }
 
+
+
+
+    Engine()
+    { 
+       
+        sm = std::make_unique<Subsytem_Manager>();
+    }
+
+private:
+
+    void EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown);
     void RegisterBuiltinSubsystems(const Options& options);
 
-    SubsystemManager subsystems_manager;
-
+    //SubsystemManager subsystems_manager;
+    
+    friend class Subsystem_Manger;
 
     SubsystemStack          m_subsystems;
     BootConfig              m_config;
     Json                    m_configDocument = Json::object();
-    std::unique_ptr<Window> m_window;
+    //std::unique_ptr<Window> m_window;
     std::unique_ptr<Scene>  m_scene;
 
     std::unique_ptr<CollisionSystem> m_collisionSystem;
@@ -178,6 +191,8 @@ private:
     EventPump m_events;
     Camera    m_camera;
     GameClock m_clock;
+
+    std::unique_ptr<Subsytem_Manager> sm;
 
     double m_lastFrameTicks = 0.0;
     int    m_stepsThisFrame = 0;

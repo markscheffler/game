@@ -23,13 +23,14 @@
 
 #include <engine/platform/SdlHandles.h>
 
-#include <engine/core/EngineSubsystem.h>
+//#include <engine/core/EngineSubsystem.h>
 
 #include <string>
 
 namespace eng {
 
-class Window: public EngineSubsystem {
+class Window//: public EngineSubsystem {
+{
 public:
     // Opens a window of the given size with the given title.
     //
@@ -48,8 +49,10 @@ public:
     Window(const Window&)            = delete;
     Window& operator=(const Window&) = delete;
 
-    void init();
-    void shutdown();
+    //void init();
+    //void shutdown();
+
+
 
     bool IsValid() const;
 

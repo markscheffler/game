@@ -34,18 +34,19 @@
 #include <string_view>
 #include <vector>
 
-#include <engine/core/EngineSubsystem.h>
+//#include <engine/core/EngineSubsystem.h>
 
 namespace eng {
 
-class FileSystem :public EngineSubsystem{
+class FileSystem //:public EngineSubsystem{
+{
 public:
     // Works out where the project's files are and remembers it.
     static bool Init();
 
-    void init();
+   // void init();
     static void Shutdown();
-    void shutdown();
+    //void shutdown();
 
     static const std::string& AssetRoot();
 

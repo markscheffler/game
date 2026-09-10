@@ -20,6 +20,9 @@
 #include <engine/math/Vec2.h>
 #include <engine/platform/SdlHandles.h>
 #include <engine/render/Texture.h>
+//#include <engine/core/EngineSubsystem.h>
+
+
 
 namespace eng {
 
@@ -84,11 +87,15 @@ private:
     int        m_height = 0;
 };
 
-class Renderer {
+class Renderer //:public EngineSubsystem{
+{
 public:
     static bool Init(Window& window);
     static void Shutdown();
     static bool IsValid();
+
+    //void init();
+    //void shutdown();
 
     // The size of whatever is currently being drawn into, in pixels - the
     // window, or a RenderTarget if one is bound.
