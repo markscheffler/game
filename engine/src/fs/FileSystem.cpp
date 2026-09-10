@@ -15,8 +15,18 @@ bool FileSystem::Init() {
     return false;
 }
 
+void FileSystem::init()
+{
+    std::println("filesystem subsystem init called");
+}
+
 // Forgets the project location.
 void FileSystem::Shutdown() {
+}
+
+void FileSystem::shutdown()
+{
+    std::println("file system shutdown called");
 }
 
 // The folder that was found - the one containing assets/.

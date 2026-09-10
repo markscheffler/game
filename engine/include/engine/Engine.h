@@ -56,6 +56,9 @@
 #include <engine/scene/SystemOrder.h>
 #include <engine/tools/GuiHooks.h>
 
+#include <engine/core/EngineSubsystem.h>
+
+
 #include <functional>
 #include <memory>
 #include <string>
@@ -158,6 +161,9 @@ private:
     Engine() = default;
 
     void RegisterBuiltinSubsystems(const Options& options);
+
+    SubsystemManager subsystems_manager;
+
 
     SubsystemStack          m_subsystems;
     BootConfig              m_config;

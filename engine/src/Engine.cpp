@@ -22,14 +22,22 @@ Window& Engine::GetWindow() {
 // Builds the ordered list of subsystems. Registration order IS dependency
 // order, and shutdown runs it in reverse: Log, FileSystem, Window, Renderer,
 // EditorGui, Input, Resources, Gizmos, Messaging, Scripts, Scene, Collision.
-void Engine::RegisterBuiltinSubsystems(const Options& /*options*/) {
+void Engine::RegisterBuiltinSubsystems(const Options& options) {
+
+    subsystems_manager.add<SubsystemId::LOGGER, eng::Log>()
+        .add<SubsystemId::FILESYSTEM, eng::FileSystem>()
+        .add<SubsystemId::WINDOW, eng::Window>();
+
+    subsystems_manager.start();
 }
 
 // Starts everything: reads the settings file, brings the subsystems up in
 // order, sets the clock, and loads the starting scene. Returns false if the
 // engine cannot run at all.
-bool Engine::Init(const Options& /*options*/) {
-    return false;
+bool Engine::Init(const Options& options) {
+    
+    RegisterBuiltinSubsystems(options);
+    return true;
 }
 
 // Stops everything, in the exact reverse of the order it was started in.

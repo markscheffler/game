@@ -23,11 +23,13 @@
 
 #include <engine/platform/SdlHandles.h>
 
+#include <engine/core/EngineSubsystem.h>
+
 #include <string>
 
 namespace eng {
 
-class Window {
+class Window: public EngineSubsystem {
 public:
     // Opens a window of the given size with the given title.
     //
@@ -37,6 +39,7 @@ public:
     // will not open is a problem with the machine, not a bug in the code, and
     // the caller should be able to react to it and exit tidily.
     Window(const char* title, int width, int height);
+    Window() = default;
 
     // Closes the renderer first and then the window, in that order. A window
     // destroyed out from under its own renderer is a crash.
@@ -44,6 +47,9 @@ public:
 
     Window(const Window&)            = delete;
     Window& operator=(const Window&) = delete;
+
+    void init();
+    void shutdown();
 
     bool IsValid() const;
 

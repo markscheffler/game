@@ -9,7 +9,9 @@ namespace eng {
 
 // Adds a subsystem to the end of the list. The order they are added in IS the
 // order they start in, and each one may assume everything before it is running.
-void SubsystemStack::Register(std::unique_ptr<Subsystem> /*subsystem*/) {
+void SubsystemStack::Register(std::unique_ptr<Subsystem> subsystem) {
+ 
+
 }
 
 // Starts every subsystem in order. If one fails, everything already started is
