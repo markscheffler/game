@@ -127,11 +127,11 @@ public:
     int StepsThisFrame() const { return m_stepsThisFrame; }
 
     // ---- getting at the pieces -------------------------------------------
-    Window&           GetWindow();
+    Window& GetWindow()              { return *sm.GetWindow(); };
     const EventPump&  Events() const { return m_events; }
     Camera&           GetCamera()    { return m_camera; }
     GameClock&        Clock()        { return m_clock; }
-    Scene&            GetScene()     { return *m_scene; }
+    Scene& GetScene()                { return *sm.GetScene(); }
     const BootConfig& Config() const { return m_config; }
 
     // Loads a different scene at a safe moment, applying the camera settings
@@ -158,41 +158,28 @@ public:
 
     bool IsInitialised() const { return m_initialised; }
 
-    Subsytem_Manager& subsystems() { return *sm; }
-
-
-
-
-    Engine()
-    { 
-       
-        sm = std::make_unique<Subsytem_Manager>();
-    }
+    Subsystem_Manager& subsystems() { return sm; }
 
 private:
+    
 
-    void EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown);
+    Engine() {}
+
     void RegisterBuiltinSubsystems(const Options& options);
 
-    //SubsystemManager subsystems_manager;
-    
-    friend class Subsystem_Manger;
+    void EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown);
 
     SubsystemStack          m_subsystems;
     BootConfig              m_config;
     Json                    m_configDocument = Json::object();
-    //std::unique_ptr<Window> m_window;
-    std::unique_ptr<Scene>  m_scene;
 
     std::unique_ptr<CollisionSystem> m_collisionSystem;
     std::unique_ptr<SpinSystem>      m_spinSystem;
-    std::unique_ptr<ScriptSystem>    m_scriptSystem;
 
     EventPump m_events;
     Camera    m_camera;
     GameClock m_clock;
-
-    std::unique_ptr<Subsytem_Manager> sm;
+    Subsystem_Manager sm;
 
     double m_lastFrameTicks = 0.0;
     int    m_stepsThisFrame = 0;

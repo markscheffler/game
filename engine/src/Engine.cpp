@@ -17,14 +17,14 @@ Engine& Engine::Get() {
 }
 
 // Hands back the game window, so the editor can attach its interface to it.
-Window& Engine::GetWindow() {
-    return *sm->GetWindow();
-    //return *m_window;
-}
+//Window& Engine::GetWindow() {
+//    return *sm.GetWindow();
+//    //return *m_window;
+//}
 
 void Engine::EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown) {
-    sm->gui.init = std::move(init);
-    sm->gui.shutdown = std::move(shutdown);
+  
+  sm.SetGuiHooks(std::move(init), std::move(shutdown));
 }
 
 // Builds the ordered list of subsystems. Registration order IS dependency
@@ -38,17 +38,20 @@ void Engine::RegisterBuiltinSubsystems(const Options& options) {
         .add<SubsystemId::RENDERER, eng::Renderer>();
 
     subsystems_manager.start();*/
-  
+
+
+
 }
 
 // Starts everything: reads the settings file, brings the subsystems up in
 // order, sets the clock, and loads the starting scene. Returns false if the
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
-    
-    //RegisterBuiltinSubsystems(options);
-    if (options.guiInit) {
-        EditorGuiHooks(options.guiInit, options.guiShutdown);
+  
+  EditorGuiHooks(options.guiInit, options.guiShutdown);
+  if (sm.InitGui())
+  {
+      return false;
     }
     return true;
 }
