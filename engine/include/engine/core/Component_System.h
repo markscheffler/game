@@ -45,17 +45,17 @@ public:
         m_log->Shutdown();
     }
 
-    Log* GetLogger() { return m_log.get(); }
-    FileSystem* Getfs() { return m_fs.get(); }
-    Window* GetWindow() { return m_window.get(); }
-    Renderer* GetRenderer() { return m_renderer.get(); }
-    InputMap* GetInput() { return m_input.get(); }
-    ResourceManager* GetResources() { return m_resources.get(); }
-    Gizmos* GetGizmo() { return m_gizmos.get(); }
-    MessageBus* GetMsgBus() { return m_msg.get(); }
-    ScriptSystem* GetScriptSys() { return m_scripts.get(); }
-    Scene* GetScene() { return m_scene.get(); }
-    CollisionSystem* GetCollisionSys() { return m_collision.get(); }
+    Log* GetLogger()                    const { return m_log.get(); }
+    FileSystem* Getfs()                 const { return m_fs.get(); }
+    Window* GetWindow()                 const { return m_window.get(); }
+    Renderer* GetRenderer()             const { return m_renderer.get(); }
+    InputMap* GetInput()                const { return m_input.get(); }
+    ResourceManager* GetResources()     const { return m_resources.get(); }
+    Gizmos* GetGizmo()                  const { return m_gizmos.get(); }
+    MessageBus* GetMsgBus()             const { return m_msg.get(); }
+    ScriptSystem* GetScriptSys()        const { return m_scripts.get(); }
+    Scene* GetScene()                   const { return m_scene.get(); }
+    CollisionSystem* GetCollisionSys()  const { return m_collision.get(); }
 
     void SetGuiHooks(GuiInit init, GuiShutdown shutdown) {
         m_GuiInit = std::move(init);
