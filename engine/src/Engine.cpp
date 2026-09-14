@@ -30,7 +30,7 @@ void Engine::EditorGuiHooks(std::function<bool()> init, std::function<void()> sh
 // Builds the ordered list of subsystems. Registration order IS dependency
 // order, and shutdown runs it in reverse: Log, FileSystem, Window, Renderer,
 // EditorGui, Input, Resources, Gizmos, Messaging, Scripts, Scene, Collision.
-void Engine::RegisterBuiltinSubsystems(const Options& options) {
+void Engine::RegisterBuiltinSubsystems(const Options& ) {
 
     /*subsystems_manager.add<SubsystemId::LOGGER, eng::Log>()
         .add<SubsystemId::FILESYSTEM, eng::FileSystem>()
