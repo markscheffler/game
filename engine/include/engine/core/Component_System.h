@@ -18,6 +18,8 @@ public:
     using GuiInit = std::function<bool()>;
     using GuiShutdown = std::function<void()>;
 
+ 
+
     Subsystem_Manager()
         : m_log{std::make_unique<Log>()}, m_fs{std::make_unique<FileSystem>()},
           m_window{std::make_unique<Window>()}, m_renderer{std::make_unique<Renderer>()},
@@ -27,10 +29,11 @@ public:
           m_collision{std::make_unique<CollisionSystem>()}
  {
 
-        m_log->Init("", eng::LogLevel::Info);
-        m_fs->Init();
-        m_renderer->Init(*m_window);
-        m_resources->Init();
+        //m_log->Init("", eng::LogLevel::Info);
+        //m_log->Init(eng::Engine::Get().Config());
+        //m_fs->Init();
+       // m_renderer->Init(*m_window);
+        //m_resources->Init();
     }
 
     ~Subsystem_Manager() {
@@ -71,7 +74,7 @@ public:
 
 private:
 
-    //friend class Engine;
+    friend class Engine;
    
    
     std::function<bool()> m_GuiInit;

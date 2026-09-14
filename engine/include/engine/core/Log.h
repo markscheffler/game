@@ -48,9 +48,17 @@
 #include <string_view>
 
 
+
+#include <chrono>
+#include <stdio.h>
+#include <filesystem>
+#include <fstream>
+#include <string>
+#include <system_error>
+
 //#include <engine/core/EngineSubsystem.h>
 
-
+struct eng::BootConfig;
 namespace eng {
 
 // How much a message matters. The editor's Console shows one filter button per
@@ -96,6 +104,9 @@ inline constexpr std::string_view kEditor   = "Editor";
 inline constexpr std::string_view kGame     = "Game";
 } // namespace Channels
 
+#include <engine/core/LogBuffer.h>
+
+
 // The log itself. Every function is static because there is exactly one log
 // for the whole program and passing a pointer to it through every subsystem
 // would be noise.
@@ -106,6 +117,8 @@ public:
     // Pass an empty path for "terminal and Console window only", which is what
     // the unit tests want.
     static bool Init(std::string_view logFilePath, LogLevel threshold);
+    static bool Init(const BootConfig& config);
+
     //void init();
     // Flushes and closes the file. The log is started first and shut down last
     // of everything in the engine, so that a subsystem can still report a

@@ -48,6 +48,11 @@ void Engine::RegisterBuiltinSubsystems(const Options& ) {
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
   
+    sm.GetLogger()->Init(Engine::Get().Config());
+    sm.Getfs()->Init();
+    sm.GetRenderer()->Init(*sm.GetWindow());
+    sm.GetResources()->Init();
+
   EditorGuiHooks(options.guiInit, options.guiShutdown);
   if (sm.InitGui())
   {

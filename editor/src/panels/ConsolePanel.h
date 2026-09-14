@@ -42,6 +42,8 @@
 #include <string>
 #include <vector>
 
+struct eng::LogRecord;
+
 namespace editor {
 
 class ConsolePanel final : public Panel {

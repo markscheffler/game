@@ -161,7 +161,7 @@ public:
     Subsystem_Manager& subsystems() { return sm; }
 
 private:
-    
+    friend class Subsystem_Manager;
 
     Engine() {}
 

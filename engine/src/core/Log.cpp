@@ -4,6 +4,8 @@
 // =============================================================================
 
 #include <engine/core/Log.h>
+#include <engine/core/Config.h>
+#include <engine/core/LogBuffer.h>
 #include <print>
 namespace eng {
 
@@ -32,15 +34,20 @@ bool ParseLogLevel(std::string_view /*text*/, LogLevel& /*out*/) {
 // Console window reads. First subsystem up, because everything else writes to it.
 
 bool initialized = false;
-LogLevel level{};
-bool Log::Init(std::string_view logFilePath, LogLevel threshold) {
+//LogLevel level{};
+bool Log::Init(std::string_view, LogLevel ) {
    
-    std::println("logger init");
-    level = threshold;
-    initialized = true;
-    return initialized;
+    //
+    //std::println("logger init");
+    //level = threshold;
+    //initialized = true;
+    //return initialized;
 }
 
+bool Log::Init(const BootConfig& config)
+{
+    eng::LogBuffer::SetCapacity(config.logBufferCapacity);
+}
 
 //void log::init()
 //{
