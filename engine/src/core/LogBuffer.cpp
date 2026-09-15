@@ -9,7 +9,9 @@ namespace eng {
 
 // Sets how many recent messages are kept. Older ones fall off the end, so a
 // program left running overnight does not fill memory with its own log.
-void LogBuffer::SetCapacity(std::size_t /*capacity*/) {
+void LogBuffer::SetCapacity(std::size_t capacity) {
+    //kDefaultCapacity = capacity;
+    auto x = capacity;
 }
 
 // How many messages the buffer is currently willing to hold.

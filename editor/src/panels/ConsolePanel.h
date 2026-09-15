@@ -36,13 +36,11 @@
 
 #include "Panel.h"
 
-#include <engine/core/LogBuffer.h>
 
+#include <engine/core/LogBuffer.h>
 #include <map>
 #include <string>
 #include <vector>
-
-
 
 namespace editor {
 

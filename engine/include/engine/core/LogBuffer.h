@@ -27,20 +27,25 @@
 #include <vector>
 
 
+namespace eng
+{
+
+}
+
 namespace eng {
 
 // One message, kept as data instead of as a finished line of text.
-struct LogRecord {
+
+    struct LogRecord {
     // Counts up forever, even after old messages are dropped. The Console uses
     // it to notice that new messages arrived so it can auto-scroll.
     unsigned long long sequence = 0;
 
-    double      timeSeconds = 0.0;   // seconds since Log::Init
-    LogLevel    level       = LogLevel::Info;
+    double timeSeconds = 0.0; // seconds since Log::Init
+    LogLevel level = LogLevel::Info;
     std::string channel;
     std::string message;
 };
-
 class LogBuffer {
 public:
     // 4096 messages is several minutes of ordinary output and roughly half a

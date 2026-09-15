@@ -48,7 +48,7 @@ void Engine::RegisterBuiltinSubsystems(const Options& ) {
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
   
-//    sm.GetLogger()->Init(Engine::Get().Config());
+    sm.GetLogger()->Init(this->Config());
     sm.Getfs()->Init();
     sm.GetRenderer()->Init(*sm.GetWindow());
     sm.GetResources()->Init();

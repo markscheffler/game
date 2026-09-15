@@ -47,8 +47,6 @@
 #include <format>
 #include <string_view>
 
-
-
 #include <chrono>
 #include <stdio.h>
 #include <filesystem>
@@ -105,7 +103,8 @@ inline constexpr std::string_view kGame     = "Game";
 } // namespace Channels
 
 
-#include <engine/core/Config.h>
+// Forward declaration to avoid circular include: Config.h includes Log.h
+struct BootConfig;
 #include <engine/core/LogBuffer.h>
 
 
@@ -119,6 +118,7 @@ public:
     // Opens the log file and starts the clock that timestamps each message.
     // Pass an empty path for "terminal and Console window only", which is what
     // the unit tests want.
+    // 
     //static bool Init(std::string_view logFilePath, LogLevel threshold);
     static bool Init(const BootConfig& config);
 

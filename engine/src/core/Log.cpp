@@ -5,7 +5,6 @@
 
 #include <engine/core/Log.h>
 #include <engine/core/Config.h>
-#include <engine/core/LogBuffer.h>
 #include <print>
 namespace eng {
 
@@ -35,18 +34,19 @@ bool ParseLogLevel(std::string_view /*text*/, LogLevel& /*out*/) {
 
 bool initialized = false;
 //LogLevel level{};
-bool Log::Init(std::string_view, LogLevel ) {
+//bool Log::Init(std::string_view, LogLevel ) {
    
     //
     //std::println("logger init");
     //level = threshold;
     //initialized = true;
     //return initialized;
-}
+//}
 
 bool Log::Init(const BootConfig& config)
 {
     eng::LogBuffer::SetCapacity(config.logBufferCapacity);
+    return true;
 }
 
 //void log::init()
