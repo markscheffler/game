@@ -42,7 +42,7 @@
 #include <string>
 #include <vector>
 
-struct eng::LogRecord;
+
 
 namespace editor {
 

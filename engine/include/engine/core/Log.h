@@ -58,7 +58,7 @@
 
 //#include <engine/core/EngineSubsystem.h>
 
-struct eng::BootConfig;
+
 namespace eng {
 
 // How much a message matters. The editor's Console shows one filter button per
@@ -104,7 +104,10 @@ inline constexpr std::string_view kEditor   = "Editor";
 inline constexpr std::string_view kGame     = "Game";
 } // namespace Channels
 
+
+#include <engine/core/Config.h>
 #include <engine/core/LogBuffer.h>
+
 
 
 // The log itself. Every function is static because there is exactly one log
@@ -116,7 +119,7 @@ public:
     // Opens the log file and starts the clock that timestamps each message.
     // Pass an empty path for "terminal and Console window only", which is what
     // the unit tests want.
-    static bool Init(std::string_view logFilePath, LogLevel threshold);
+    //static bool Init(std::string_view logFilePath, LogLevel threshold);
     static bool Init(const BootConfig& config);
 
     //void init();

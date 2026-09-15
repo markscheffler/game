@@ -28,7 +28,7 @@
 #include <engine/core/Json.h>
 #include <engine/core/Log.h>
 #include <engine/core/LogBuffer.h>
-#include <engine/core/Subsystem.h>
+//#include <engine/core/Subsystem.h>
 #include <engine/fs/FileSystem.h>
 #include <engine/input/InputMap.h>
 #include <engine/math/Mat3.h>
@@ -127,7 +127,7 @@ public:
     int StepsThisFrame() const { return m_stepsThisFrame; }
 
     // ---- getting at the pieces -------------------------------------------
-    Window& GetWindow()              { return *sm.GetWindow(); };
+    Window& GetWindow()              { return *sm.GetWindow(); }
     const EventPump&  Events() const { return m_events; }
     Camera&           GetCamera()    { return m_camera; }
     GameClock&        Clock()        { return m_clock; }
@@ -169,7 +169,7 @@ private:
 
     void EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown);
 
-    SubsystemStack          m_subsystems;
+    //SubsystemStack          m_subsystems;
     BootConfig              m_config;
     Json                    m_configDocument = Json::object();
 
