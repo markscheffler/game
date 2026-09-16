@@ -5,6 +5,7 @@
 
 #include <engine/core/Log.h>
 #include <engine/core/Config.h>
+#include <engine/core/LogBuffer.h>
 #include <print>
 namespace eng {
 
@@ -46,7 +47,8 @@ bool initialized = false;
 bool Log::Init(const BootConfig& config)
 {
     eng::LogBuffer::SetCapacity(config.logBufferCapacity);
-    return true;
+    initialized = true;
+    return initialized;
 }
 
 //void log::init()

@@ -12,6 +12,7 @@
 #include "EditorApp.h"
 #include "ScriptBuild.h"
 
+#include <engine/core/Config.h>
 #include <engine/core/Log.h>
 #include <engine/fs/FileSystem.h>
 
@@ -31,7 +32,10 @@ int BuildScriptsAndExit() {
     // Only the two pieces this actually needs, started by hand: somewhere to
     // write messages, and the ability to turn a virtual path into a real one.
     // There is no window, no renderer and no scene.
-    //eng::Log::Init("logs/engine.log", eng::LogLevel::Info);
+    // Log::Init now takes the settings. There is no engine here to have read
+    // config/engine.json, so it gets the defaults - logs/engine.log at Info,
+    // which is exactly what the old two-argument call passed.
+    eng::Log::Init(eng::BootConfig{});
     eng::FileSystem::Init();
 
     editor::ScriptBuild::Init();

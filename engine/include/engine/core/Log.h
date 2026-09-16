@@ -105,7 +105,12 @@ inline constexpr std::string_view kGame     = "Game";
 
 // Forward declaration to avoid circular include: Config.h includes Log.h
 struct BootConfig;
-#include <engine/core/LogBuffer.h>
+
+// NOTE: LogBuffer.h is NOT included here. An #include pastes the whole file in
+// at that exact spot, and this spot is INSIDE `namespace eng` - which turned
+// LogBuffer into eng::eng::LogBuffer for every file that reached it through
+// this header, but left it as eng::LogBuffer inside LogBuffer.cpp. Nothing in
+// this header needs LogBuffer anyway; Log.cpp includes it for itself.
 
 
 

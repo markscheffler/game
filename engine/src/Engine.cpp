@@ -47,22 +47,41 @@ void Engine::RegisterBuiltinSubsystems(const Options& ) {
 // order, sets the clock, and loads the starting scene. Returns false if the
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
-  
-    sm.GetLogger()->Init(this->Config());
-    sm.Getfs()->Init();
-    sm.GetRenderer()->Init(*sm.GetWindow());
-    sm.GetResources()->Init();
+    sm.m_started = true;
 
-  EditorGuiHooks(options.guiInit, options.guiShutdown);
-  if (sm.InitGui())
-  {
-      return false;
+    // The file system first: the settings live in a file, and Log::Init needs
+    // those settings. Without this, Log::Init was handed a BootConfig that had
+    // never been read, so it could only ever see the defaults.
+    sm.Getfs()->Init();
+
+    std::string configError;
+    LoadBootConfig(options.configPath, m_config, m_configDocument, configError);
+
+    sm.GetLogger()->Init(this->Config());
+
+    // The window has to be OPEN before the renderer can draw into it. The
+    // manager starts out holding an empty Window, and a Window only opens in
+    // its constructor, so it is replaced here with one built from the settings.
+    // (Engine can reach m_window because Subsystem_Manager names it a friend.)
+    sm.m_window = std::make_unique<Window>(m_config.windowTitle.c_str(),
+                                           m_config.windowWidth, m_config.windowHeight);
+    sm.GetRenderer()->Init(*sm.GetWindow());
+
+    // The editor's interface needs the window and renderer, and comes down
+    // before them - which is why Shutdown stops it before the renderer.
+    EditorGuiHooks(options.guiInit, options.guiShutdown);
+    if (!sm.InitGui())
+    {
+        return false;
     }
+
+    sm.GetResources()->Init();
     return true;
 }
 
 // Stops everything, in the exact reverse of the order it was started in.
 void Engine::Shutdown() {
+    sm.Shutdown();
 }
 
 // Replaces the current scene with the one in the named file, and moves the

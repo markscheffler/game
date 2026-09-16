@@ -1,8 +1,22 @@
 #pragma once
 
 #include <memory>
-#include <engine/Engine.h>
 #include <functional>
+
+// The classes this manager holds, and nothing more. This file used to include
+// engine/Engine.h - but Engine.h includes THIS file, so whichever of the two a
+// .cpp happened to include first decided whether it compiled at all.
+#include <engine/core/Log.h>
+#include <engine/fs/FileSystem.h>
+#include <engine/input/InputMap.h>
+#include <engine/physics/Collider.h>
+#include <engine/platform/Window.h>
+#include <engine/render/Gizmos.h>
+#include <engine/render/Renderer.h>
+#include <engine/resource/ResourceManager.h>
+#include <engine/scene/Messaging.h>
+#include <engine/scene/Scene.h>
+#include <engine/scene/ScriptComponent.h>
 
 namespace eng {
 
@@ -35,6 +49,18 @@ public:
     }
 
     ~Subsystem_Manager() {
+        // A backstop only - Engine::Shutdown should already have done this.
+        // The engine lives inside engine.dll, so this destructor runs after
+        // main() has returned, when the editor's own code is already gone.
+        Shutdown();
+    }
+
+    // Stops everything, in the reverse of the order Engine::Init started it.
+    void Shutdown() {
+        // Only once, and only if start-up actually began.
+        if (!m_started)
+            return;
+        m_started = false;
 
         m_resources->Shutdown();
 
@@ -42,6 +68,7 @@ public:
             m_GuiShutdown();
 
         m_renderer->Shutdown();
+        m_window.reset();        // a Window closes when it is destroyed
         m_fs->Shutdown();
         m_log->Shutdown();
     }
@@ -65,9 +92,11 @@ public:
     }
 
     bool InitGui() {
+        // No editor attached (the standalone game) is not a failure - there is
+        // simply nothing to start.
         if (!m_GuiInit)
             return true;
-        return false;
+        return m_GuiInit();
     }
 
 private:
@@ -77,6 +106,8 @@ private:
    
     std::function<bool()> m_GuiInit;
     std::function<void()> m_GuiShutdown;
+
+    bool m_started = false;   // set by Engine::Init, cleared by Shutdown
 
     std::unique_ptr<Log> m_log;
     std::unique_ptr<FileSystem> m_fs;
