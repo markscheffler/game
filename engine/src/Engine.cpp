@@ -55,7 +55,8 @@ bool Engine::Init(const Options& options) {
     sm.Getfs()->Init();
 
     std::string configError;
-    LoadBootConfig(options.configPath, m_config, m_configDocument, configError);
+    
+    //LoadBootConfig(options.configPath, m_config, m_configDocument, configError);
 
     sm.GetLogger()->Init(this->Config());
 
@@ -63,8 +64,10 @@ bool Engine::Init(const Options& options) {
     // manager starts out holding an empty Window, and a Window only opens in
     // its constructor, so it is replaced here with one built from the settings.
     // (Engine can reach m_window because Subsystem_Manager names it a friend.)
-    sm.m_window = std::make_unique<Window>(m_config.windowTitle.c_str(),
-                                           m_config.windowWidth, m_config.windowHeight);
+    //sm.m_window = std::make_unique<Window>(m_config.windowTitle.c_str(),
+    //                                       m_config.windowWidth, m_config.windowHeight);
+
+    sm.GetWindow()->Init(m_config);
     sm.GetRenderer()->Init(*sm.GetWindow());
 
     // The editor's interface needs the window and renderer, and comes down

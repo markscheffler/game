@@ -5,14 +5,17 @@
 
 #include <engine/platform/Window.h>
 
+#include <SDL3/SDL.h>
+
+
 namespace eng {
 
 // Opens an operating-system window of the given size, and the object that draws
 // into it. If anything fails the object is left INVALID rather than half-built,
 // and no exception is thrown - a display that will not open is a problem with
 // the machine, not a bug, and the caller should be able to exit tidily.
-Window::Window(const char* /*title*/, int /*width*/, int /*height*/) {
-}
+//Window::Window(const char* title, int width, int height) {
+//}
 
 // Closes the window. The renderer has to go first, which is the order the
 // members are declared in - see Window.h.
@@ -20,15 +23,16 @@ Window::~Window() {
 }
 
 
-//void Window::init()
-//{
-//    std::println("Window subsystem init called");
-//}
+void Window::Init(const BootConfig& config)
+{
+    auto win = SDL_CreateWindow(config.windowTitle.c_str(), config.windowWidth, config.windowHeight,
+                                SDL_WINDOW_RESIZABLE);
 
-//void Window::shutdown()
-//{
-//    std::println("window subsystem shutdown called");
-//}
+    m_window.reset(win);
+
+    auto ren = SDL_CreateRenderer(m_window.get(), "");
+    m_renderer.reset(ren);
+}
 
 // Did the window actually open? Start-up stops here if it did not.
 bool Window::IsValid() const {
@@ -60,12 +64,12 @@ void Window::Present() {
 // The underlying SDL window, as a plain pointer. Only the editor needs this, to
 // attach its interface - which is why it is handed out without naming SDL.
 void* Window::NativeWindowHandle() const {
-    return nullptr;
+    return m_window.get();
 }
 
 // The underlying SDL renderer, handed out for the same reason.
 void* Window::NativeRendererHandle() const {
-    return nullptr;
+    return m_renderer.get();
 }
 
 } // namespace eng

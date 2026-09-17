@@ -6,13 +6,17 @@
 //  four types, which is what keeps SDL out of the public interface.
 // =============================================================================
 
+
 #include <engine/platform/SdlHandles.h>
+
+#include <SDL3/SDL.h>
 
 namespace eng {
 
 // Destroys an SDL window. Called automatically when the WindowPtr holding it
 // goes out of scope, so there is no matching "close" call to remember.
-void SdlWindowDeleter::operator()(SDL_Window* /*window*/) const noexcept {
+void SdlWindowDeleter::operator()(SDL_Window* window) const noexcept {
+    SDL_DestroyWindow(window);
 }
 
 // Destroys an SDL renderer, the same way and for the same reason.

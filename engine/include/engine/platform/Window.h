@@ -24,7 +24,7 @@
 #include <engine/platform/SdlHandles.h>
 
 //#include <engine/core/EngineSubsystem.h>
-
+#include <engine/core/Config.h>
 #include <string>
 
 namespace eng {
@@ -39,7 +39,9 @@ public:
     // log, and IsValid() returns false. No exception is thrown: a display that
     // will not open is a problem with the machine, not a bug in the code, and
     // the caller should be able to react to it and exit tidily.
-    Window(const char* title, int width, int height);
+    
+    //Window(const char* title, int width, int height);
+    void Init(const BootConfig& config);
     Window() = default;
 
     // Closes the renderer first and then the window, in that order. A window

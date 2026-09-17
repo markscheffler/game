@@ -10,7 +10,15 @@
 
 namespace fs = std::filesystem;
 
+
+
 namespace eng {
+
+
+    
+namespace {
+std::string g_root;
+}
 
 // Works out where the project is by starting at the program's own location and
 // walking up until it finds a folder containing assets/. Where it settled is
@@ -39,8 +47,8 @@ void FileSystem::Shutdown() {
 
 // The folder that was found - the one containing assets/.
 const std::string& FileSystem::AssetRoot() {
-    static const std::string root;
-    return root;
+ 
+    return g_root;
 }
 
 // Turns a short name like "textures/player.bmp" into a real path on this
@@ -179,22 +187,83 @@ bool FileSystem::CreateDirectory(std::string_view virtualDirectory,
 }
 
 // Reads a whole text file - a scene, the settings - into a string.
-bool FileSystem::ReadTextFile(std::string_view /*virtualPath*/, std::string& /*outText*/,
-                              std::string& /*outError*/) {
-    return false;
+bool FileSystem::ReadTextFile(std::string_view virtualPath, std::string& outText,
+                              std::string& outError) {
+
+    const std::string real = Resolve(virtualPath);
+    std::ifstream ifs(real);
+    if (!ifs)
+    {
+        outError = "can't open " + std::string(virtualPath) + "(looked in) " + real;
+        return false;
+    }
+
+    std::ostringstream ss;
+    ss << ifs.rdbuf();
+    outText = ss.str();
+    outError.clear();
+
+
+    return true;
 }
 
 // Reads a whole binary file - an image - into a list of bytes.
-bool FileSystem::ReadFile(std::string_view /*virtualPath*/,
-                          std::vector<unsigned char>& /*outBytes*/,
-                          std::string& /*outError*/) {
-    return false;
+bool FileSystem::ReadFile(std::string_view virtualPath,
+                          std::vector<unsigned char>& outBytes,
+                          std::string& outError) {
+
+    const std::string real = Resolve(virtualPath);
+
+    std::ifstream ifs(real, std::ios::binary | std::ios::ate);
+    if (!ifs)
+    {
+        outError = "can't open " + real + " for reading ";
+        return false;
+    }
+    
+    const std::streamsize size = ifs.tellg();
+    if (size < 0)
+    {
+        outError = "file size can't be zero ";
+        return false;
+    }
+
+    ifs.seekg(0, std::ios::beg);
+
+    outBytes.resize(static_cast<std::size_t>(size));
+    if (!ifs.read(reinterpret_cast<char*>(outBytes.data()), size))
+    {
+        outError = "can't read file " + std::string(virtualPath);
+        return false;
+    }
+    outError.clear();
+    return true;
 }
 
 // Writes a text file, creating any folders it needs on the way.
-bool FileSystem::WriteTextFile(std::string_view /*virtualPath*/, std::string_view /*text*/,
-                               std::string& /*outError*/) {
-    return false;
+bool FileSystem::WriteTextFile(std::string_view virtualPath, std::string_view text,
+                               std::string& outError) {
+
+
+    const std::string real(Resolve(virtualPath));
+    std::error_code ec;
+    fs::create_directories(fs::path(real).parent_path(), ec);
+
+    std::ofstream ofs(real, std::ios::trunc);
+    if (!ofs)
+    {
+        outError = "can't open " + real + " for writing";
+        return false;
+    }
+
+    if (!ofs.write(text.data(), static_cast<std::streamsize>(text.size())))
+    {
+        outError = "failed to write to " + real;
+        return false;
+    }
+
+    outError.clear();
+    return true;
 }
 
 } // namespace eng

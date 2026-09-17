@@ -29,11 +29,16 @@ public:
  
 
     Subsystem_Manager()
-        : m_log{std::make_unique<Log>()}, m_fs{std::make_unique<FileSystem>()},
-          m_window{std::make_unique<Window>()}, m_renderer{std::make_unique<Renderer>()},
-          m_input{std::make_unique<InputMap>()}, m_resources{std::make_unique<ResourceManager>()},
-          m_gizmos{std::make_unique<Gizmos>()}, m_msg{std::make_unique<MessageBus>()},
-          m_scripts{std::make_unique<ScriptSystem>()}, m_scene{std::make_unique<Scene>()},
+        : m_log{std::make_unique<Log>()}, 
+        m_fs{std::make_unique<FileSystem>()},
+          m_window{std::make_unique<Window>()},
+        m_renderer{std::make_unique<Renderer>()},
+          m_input{std::make_unique<InputMap>()}, 
+        m_resources{std::make_unique<ResourceManager>()},
+          m_gizmos{std::make_unique<Gizmos>()}, 
+        m_msg{std::make_unique<MessageBus>()},
+          m_scripts{std::make_unique<ScriptSystem>()},
+        m_scene{std::make_unique<Scene>()},
           m_collision{std::make_unique<CollisionSystem>()}
  {
 

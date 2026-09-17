@@ -169,7 +169,7 @@ private:
 
     void EditorGuiHooks(std::function<bool()> init, std::function<void()> shutdown);
 
-    //SubsystemStack          m_subsystems;
+
     BootConfig              m_config;
     Json                    m_configDocument = Json::object();
 
