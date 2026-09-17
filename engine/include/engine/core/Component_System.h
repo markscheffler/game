@@ -21,10 +21,6 @@
 namespace eng {
 
 
-
-//class Scene;
-//class Collision;
-
 class Subsystem_Manager {
 public:
     using GuiInit = std::function<bool()>;
