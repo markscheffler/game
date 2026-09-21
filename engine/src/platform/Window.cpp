@@ -29,8 +29,9 @@ void Window::Init(const BootConfig& config)
                                 SDL_WINDOW_RESIZABLE);
 
     m_window.reset(win);
+    //_sleep(5000);
 
-    auto ren = SDL_CreateRenderer(m_window.get(), "");
+    auto ren = SDL_CreateRenderer(m_window.get(), nullptr);
     m_renderer.reset(ren);
 }
 
@@ -55,6 +56,9 @@ void Window::SetTitle(const char* /*title*/) {
 
 // Fills the whole window with one colour, wiping last frame's picture.
 void Window::Clear(unsigned char /*r*/, unsigned char /*g*/, unsigned char /*b*/) {
+
+    // clear color
+    // draw call
 }
 
 // Shows whatever has been drawn since the last Clear.

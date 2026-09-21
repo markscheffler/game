@@ -20,12 +20,8 @@
 #include <engine/math/Vec2.h>
 #include <engine/platform/SdlHandles.h>
 #include <engine/render/Texture.h>
-//#include <engine/core/EngineSubsystem.h>
-
-
 
 namespace eng {
-
 class Window;
 
 // A colour, one byte per channel, 0-255. `unsigned char` is used because that
