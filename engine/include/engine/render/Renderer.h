@@ -132,7 +132,7 @@ public:
     // Draws a texture centred on `centre`, `size` pixels across, turned by
     // `rotationDegrees` clockwise (which is the direction SDL rotates).
     // `tint` multiplies the image's colours, so White() draws it unchanged.
-    static void DrawSprite(const TextureRef& texture, Vec2 centre, Vec2 size,
+    static void DrawSprite(const TextureRef& texture, Vec2 center, Vec2 size,
                            float rotationDegrees, Color tint);
 
     // Engine-internal: the GUI layer and the texture loader both need the

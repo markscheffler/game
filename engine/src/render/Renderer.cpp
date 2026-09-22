@@ -251,13 +251,13 @@ float Renderer::TextCharWidth() {
 }
 
 // Draws a line of text with the built-in font, starting at its top-left corner.
-void Renderer::DrawText(Vec2 /*topLeft*/, const char* /*text*/, Color /*color*/) {
+void Renderer::DrawText(Vec2 topLeft, const char* text, Color color) {
 }
 
 // Draws a picture centred on a point, at a size, turned by an angle, with its
 // colours multiplied by a tint. This is the one call that puts a sprite on screen.
-void Renderer::DrawSprite(const TextureRef& /*texture*/, Vec2 /*centre*/, Vec2 /*size*/,
-                          float /*rotationDegrees*/, Color /*tint*/) {
+void Renderer::DrawSprite(const TextureRef& texture, Vec2 center, Vec2 size,
+                          float rotationDegrees, Color tint) {
 }
 
 } // namespace eng
