@@ -31,7 +31,7 @@
 
 #include <string>
 #include <string_view>
-
+#include <engine/core/Component_System.h>
 
 namespace eng {
 
@@ -71,6 +71,6 @@ struct BootConfig {
 // the one case where starting up with defaults would silently ignore what
 // somebody actually wrote. A missing file is not a failure.
 bool LoadBootConfig(std::string_view virtualPath, BootConfig& outConfig,
-                    Json& outDocument, std::string& outError);
+                    Json& outDocument, std::string& outError, Subsystem_Manager& sm);
 
 } // namespace eng

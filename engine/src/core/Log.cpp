@@ -48,6 +48,7 @@ bool Log::Init(const BootConfig& config)
 {
     eng::LogBuffer::SetCapacity(config.logBufferCapacity);
     initialized = true;
+    std::println("logger init called");
     return initialized;
 }
 

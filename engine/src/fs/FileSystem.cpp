@@ -32,7 +32,7 @@ bool FileSystem::Init() {
     
 
 
-    return false;
+    return true;
 }
 
 

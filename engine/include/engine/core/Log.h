@@ -120,6 +120,7 @@ struct BootConfig;
 class Log //:public EngineSubsystem{
 {
 public:
+    Log() = default;
     // Opens the log file and starts the clock that timestamps each message.
     // Pass an empty path for "terminal and Console window only", which is what
     // the unit tests want.

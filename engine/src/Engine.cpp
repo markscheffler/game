@@ -4,7 +4,8 @@
 // =============================================================================
 
 #include <engine/Engine.h>
-
+#include <print>
+#include <SDL3/SDL.h>
 namespace eng {
 
 // Returns the one and only engine. Created the first time it is asked for, so
@@ -48,7 +49,7 @@ void Engine::RegisterBuiltinSubsystems(const Options& ) {
 // engine cannot run at all.
 bool Engine::Init(const Options& options) {
     sm.m_started = true;
-
+    bool inited = false;
     // The file system first: the settings live in a file, and Log::Init needs
     // those settings. Without this, Log::Init was handed a BootConfig that had
     // never been read, so it could only ever see the defaults.
@@ -56,7 +57,10 @@ bool Engine::Init(const Options& options) {
 
     std::string configError;
     
-    //LoadBootConfig(options.configPath, m_config, m_configDocument, configError);
+    if (!LoadBootConfig(options.configPath, m_config, m_configDocument, configError, sm))
+    {
+        std::println("{}", configError.c_str());
+    }
 
     sm.GetLogger()->Init(this->Config());
 
@@ -75,11 +79,26 @@ bool Engine::Init(const Options& options) {
     EditorGuiHooks(options.guiInit, options.guiShutdown);
     if (!sm.InitGui())
     {
-        return false;
+        inited = false;
     }
-
+    
     sm.GetResources()->Init();
-    return true;
+   
+    m_clock.Init();
+    m_clock.SetFixedStepSeconds(m_config.fixedTimestepSeconds);
+    m_clock.SetMaxStepsPerFrame(m_config.maxStepsPerFrame);
+
+    const std::string scene =
+        options.sceneOverride.empty() ? m_config.startupScene : options.sceneOverride;
+
+    std::string err;
+    LoadScene(scene, err);
+
+    m_lastFrameTicks = static_cast<double>(SDL_GetPerformanceCounter());
+
+
+    inited = true;
+    return inited;
 }
 
 // Stops everything, in the exact reverse of the order it was started in.
@@ -131,6 +150,7 @@ void Engine::RenderFrame() {
 
 // Shows the frame that was just drawn.
 void Engine::PresentFrame() {
+    Renderer::Present();
 }
 
 // The standalone game's whole loop: begin, simulate, render, present, repeat.
