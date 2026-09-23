@@ -57,7 +57,7 @@ bool Engine::Init(const Options& options) {
 
     std::string configError;
     
-    if (!LoadBootConfig(options.configPath, m_config, m_configDocument, configError, sm))
+    if (!LoadBootConfig(options.configPath, m_config, m_configDocument, configError))
     {
         std::println("{}", configError.c_str());
     }

@@ -3,10 +3,8 @@
 //  an empty body. Config.h is the specification; read it before filling one in.
 // =============================================================================
 
-#include <engine/core/Config.h>
-#include <engine/core/Component_System.h>
-#include <engine/core/Json.h>
-#include <engine/core/Log.h>
+
+#include <engine/Engine.h>
 namespace eng {
 
 // Reads config/engine.json into a BootConfig - window size, log level, fixed
@@ -30,11 +28,16 @@ namespace eng {
 
 
 bool LoadBootConfig(std::string_view virtualPath, BootConfig& outConfig,
-                    Json& outDocument, std::string& outError, Subsystem_Manager& sm) {
+                    Json& outDocument, std::string& outError) {
+
+
+    auto fs = Engine::Get().subsystems().Getfs();
+
+    
 
     std::string txt, read_err;
     
-    if (!sm.Getfs()->ReadTextFile(virtualPath, txt, read_err))
+    if (!fs->ReadTextFile(virtualPath, txt, read_err))
     {
         outError = "no setting file at " + std::string(virtualPath) + "using built in defaults";
         ENGINE_LOG_WARN(Channels::kConfig, "{}", outError);
