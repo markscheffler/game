@@ -25,6 +25,8 @@ Window::~Window() {
 
 void Window::Init(const BootConfig& config)
 {
+
+    SDL_InitSubSystem(SDL_INIT_VIDEO);
     auto win = SDL_CreateWindow(config.windowTitle.c_str(), config.windowWidth, config.windowHeight,
                                 SDL_WINDOW_RESIZABLE);
 
