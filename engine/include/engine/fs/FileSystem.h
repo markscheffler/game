@@ -42,7 +42,7 @@ class FileSystem //:public EngineSubsystem{
 {
 public:
     // Works out where the project's files are and remembers it.
-    static bool Init();
+    static bool Init(const BootConfig&);
 
    // void init();
     static void Shutdown();

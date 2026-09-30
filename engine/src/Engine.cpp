@@ -53,7 +53,7 @@ bool Engine::Init(const Options& options) {
     // The file system first: the settings live in a file, and Log::Init needs
     // those settings. Without this, Log::Init was handed a BootConfig that had
     // never been read, so it could only ever see the defaults.
-    sm.Getfs()->Init();
+    sm.Getfs()->Init(this->Config());
 
     std::string configError;
     
