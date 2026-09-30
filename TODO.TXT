@@ -1,0 +1,38 @@
+core/
+	json.cpp
+	Logbuffer.cpp
+input/
+	Inputmap.cpp
+math
+	mat3.cpp
+	overlap.cpp
+	random.cpp
+	transform2d.cpp
+
+physics/
+	collider.cpp
+
+platform/
+	Sdlhandles.cpp
+
+
+renderer/
+	camera.cpp
+	gizmos.cpp
+
+resource/
+	resourcemanager.cpp
+
+scene/
+	component.cpp
+	deferredops.cpp
+	entity.cpp
+	messaging.cpp
+	scene.cpp
+	scriptcomponent.cpp
+	scriptlibrary.cpp
+	spincomponent.cpp
+	systemorder.cpp
+
+engine.cpp
+

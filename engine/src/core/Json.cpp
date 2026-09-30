@@ -4,33 +4,65 @@
 // =============================================================================
 
 #include <engine/core/Json.h>
+#include <engine/core/Log.h>
+
+
 
 namespace eng {
 
-// Turns text into a Json document. On failure it returns an empty object and
+    namespace
+    {
+        std::string Describe(std::string_view where, std::string_view key) {
+        {
+            if (where.empty())
+                return std::string(key);
+        }
+        return std::string(where) + "." + std::string(key);
+       }
+        
+
+
+    const Json* Lookup(const Json& obj, std::string_view key)
+    {
+        if (!obj.is_object())
+        {
+            return nullptr;
+        }
+        const auto it = obj.find(std::string(key));
+        return (it != obj.end()) ? &(*it) : nullptr;
+    }
+        // Turns text into a Json document. On failure it returns an empty object and
 // puts the reason - including the line number - into outError, rather than
 // throwing.
-Json ParseJson(std::string_view /*text*/, std::string& /*outError*/) {
-    return Json::object();
+Json ParseJson(std::string_view text, std::string& outError) {
+
+    Json doc = Json::parse(text, nullptr, false, true);
+
+    if (doc.is_discarded()) {
+        outError = "the file is not valid JSON (check for a missing comma, quote or closing brace)";
+        return Json::object();
+    }
+    outError.clear();
+    return doc;
 }
 
 // Reads a whole number from a field. Missing or wrong-typed fields give back
 // the fallback and log a warning naming the file that asked, so a typo in a
 // scene file is reported instead of silently becoming zero.
-int ReadInt(const Json& /*object*/, std::string_view /*key*/, int fallback,
-            std::string_view /*where*/) {
+int ReadInt(const Json& object, std::string_view key, int fallback,
+            std::string_view where) {
     return fallback;
 }
 
 // Reads a decimal number from a field, falling back the same way ReadInt does.
-float ReadFloat(const Json& /*object*/, std::string_view /*key*/, float fallback,
-                std::string_view /*where*/) {
+float ReadFloat(const Json& object, std::string_view key, float fallback,
+                std::string_view where) {
     return fallback;
 }
 
 // Reads a true/false field, falling back the same way ReadInt does.
-bool ReadBool(const Json& /*object*/, std::string_view /*key*/, bool fallback,
-              std::string_view /*where*/) {
+bool ReadBool(const Json& object, std::string_view key, bool fallback,
+              std::string_view where) {
     return fallback;
 }
 

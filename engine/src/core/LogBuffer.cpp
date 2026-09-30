@@ -11,12 +11,12 @@ namespace eng {
 
   namespace
   {
-std::vector<LogRecord> g_ring;
-  std::size_t g_capacity = LogBuffer::kDefaultCapacity;
-  std::size_t g_head{};
-  std::size_t g_size{};
-std::size_t g_total{};
-std::set<std::string> g_channels;
+    std::vector<LogRecord> g_ring;
+    std::size_t g_capacity = LogBuffer::kDefaultCapacity;
+    std::size_t g_head{};
+    std::size_t g_size{};
+    std::size_t g_total{};
+    std::set<std::string> g_channels;
 
   }
 // Sets how many recent messages are kept. Older ones fall off the end, so a
