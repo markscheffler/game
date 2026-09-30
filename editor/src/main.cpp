@@ -36,7 +36,7 @@ int BuildScriptsAndExit() {
     // config/engine.json, so it gets the defaults - logs/engine.log at Info,
     // which is exactly what the old two-argument call passed.
     eng::Log::Init(eng::BootConfig{});
-    eng::FileSystem::Init();
+    eng::FileSystem::Init(eng::BootConfig{});
 
     editor::ScriptBuild::Init();
     const editor::ScriptBuild::Result result = editor::ScriptBuild::BuildAndReload();

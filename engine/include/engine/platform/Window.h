@@ -96,6 +96,7 @@ private:
 
     bool        m_videoInitialised = false;
     std::string m_title;
+    void shutdown();
 };
 
 } // namespace eng

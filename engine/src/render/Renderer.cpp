@@ -28,10 +28,6 @@ namespace eng {
                SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 
            }
-
-
-
-
        } // namespace
 
 // Borrows the drawing object the window already owns. The renderer does not
@@ -82,7 +78,7 @@ Vec2 Renderer::OutputSize() {
         return Vec2{0.0f, 0.0f};
     }
 
-    if (render_target == nullptr && render_target->IsValid())
+    if (render_target != nullptr && render_target->IsValid())
         return Vec2{static_cast<float>(render_target->Width()),
                     static_cast<float>(render_target->Height())};
 

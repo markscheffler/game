@@ -6,13 +6,14 @@
 #include <engine/core/LogBuffer.h>
 #include <set>
 #include <algorithm>
+
 namespace eng {
 
   namespace
   {
 std::vector<LogRecord> g_ring;
-  std::size_t g_capacity = LogBuffer::kDeaultCapacity;
-std::size_t g_head{};
+  std::size_t g_capacity = LogBuffer::kDefaultCapacity;
+  std::size_t g_head{};
   std::size_t g_size{};
 std::size_t g_total{};
 std::set<std::string> g_channels;
