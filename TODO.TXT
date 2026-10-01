@@ -1,6 +1,6 @@
 core/
-	json.cpp
-	Logbuffer.cpp
+	json.cpp X
+	Logbuffer.cpp  X
 input/
 	Inputmap.cpp
 math
