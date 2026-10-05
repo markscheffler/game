@@ -2,31 +2,31 @@ core/
 	json.cpp X
 	Logbuffer.cpp  X
 input/
-	Inputmap.cpp
+	Inputmap.cpp X
 math
-	mat3.cpp
-	overlap.cpp
-	random.cpp
-	transform2d.cpp
+	mat3.cpp X
+	overlap.cpp X
+	random.cpp X
+	transform2d.cpp X
 
 physics/
-	collider.cpp
+	collider.cpp X
 
 platform/
-	Sdlhandles.cpp
+	Sdlhandles.cpp X
 
 
 renderer/
-	camera.cpp
-	gizmos.cpp
+	camera.cpp X
+	gizmos.cpp X
 
 resource/
-	resourcemanager.cpp
+	resourcemanager.cpp X
 
 scene/
-	component.cpp
-	deferredops.cpp
-	entity.cpp
+	component.cpp X
+	deferredops.cpp X
+	entity.cpp 
 	messaging.cpp
 	scene.cpp
 	scriptcomponent.cpp

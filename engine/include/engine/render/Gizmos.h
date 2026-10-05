@@ -71,6 +71,9 @@ const char* ToString(GizmoCategory category);
 
 class Gizmos {
 public:
+
+    static bool init(const BootConfig& config);
+    ~Gizmos();
     static void Line(Vec2 a, Vec2 b, Color color, float lifetimeSeconds = 0.0f,
                      GizmoSpace space = GizmoSpace::World,
                      GizmoCategory category = GizmoCategory::Default);
