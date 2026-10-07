@@ -175,6 +175,7 @@ private:
 
     std::unique_ptr<CollisionSystem> m_collisionSystem;
     std::unique_ptr<SpinSystem>      m_spinSystem;
+    std::unique_ptr<ScriptSystem> m_scriptsys;
 
     EventPump m_events;
     Camera    m_camera;

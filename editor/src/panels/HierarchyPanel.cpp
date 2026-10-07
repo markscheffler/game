@@ -176,6 +176,13 @@ void HierarchyPanel::DrawRenamePopup() {
 void HierarchyPanel::Draw() {
     eng::Scene& scene = eng::Engine::Get().GetScene();
 
+    const ImGuiIO& io = ImGui::GetIO();
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete, false) && !io.WantTextInput && ImGui::IsWindowFocused()) {
+        if (auto entity =
+                eng::Engine::Get().subsystems().GetScene()->Get(EditorState::Get().selected))
+            eng::DeferredOps::QueueDestroy(entity->Id());
+    }
+
     if (ImGui::Button("+ Create Entity")) {
         const eng::EntityId created = scene.CreateEntity(scene.MakeUniqueName("Entity"));
         if (!created.IsNull()) {

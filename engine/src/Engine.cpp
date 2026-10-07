@@ -86,7 +86,17 @@ bool Engine::Init(const Options& options) {
     sm.GetGizmo()->init(this->Config());
     sm.GetMsgBus()->init(this->Config());
     
-
+   auto& engine = Engine::Get();
+    ComponentFactory::RegisterBuiltins();
+   CollisionSystem::RegisterComponentTypes();
+    SpinSystem::RegisterComponentTypes();
+   ScriptSystem::RegisterComponentTypes();
+    engine.m_spinSystem = std::make_unique<SpinSystem>();
+   engine.m_scriptsys = std::make_unique<ScriptSystem>();
+    SystemScheduler::Register(m_spinSystem.get());
+   SystemScheduler::Register(m_scriptsys.get());
+    Scene::SetActive(subsystems().GetScene());
+    
     m_clock.Init();
     m_clock.SetFixedStepSeconds(m_config.fixedTimestepSeconds);
     m_clock.SetMaxStepsPerFrame(m_config.maxStepsPerFrame);
@@ -227,6 +237,8 @@ bool Engine::BeginFrame() {
 // Runs the simulation steps this frame owes, in system order: gameplay,
 // movement, collision, messages, create/destroy, camera.
 void Engine::Simulate() {
+    int step = 0;
+
     for (int step = 0; step < m_stepsThisFrame; ++step) {
         const float fixedStep = m_clock.FixedStepSeconds();
 
@@ -246,6 +258,9 @@ void Engine::Simulate() {
                                      fixedStep);
 
         m_clock.OnStepConsumed();
+    }
+    if (sm.GetScene() != nullptr && step == 0) {
+        DeferredOps::Apply(*sm.GetScene());
     }
 }
 

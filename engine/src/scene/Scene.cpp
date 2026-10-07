@@ -36,6 +36,70 @@ const Json& Field(const Json& object, const char* name) {
 }
 
 } // namespace
+namespace {
+
+// Builds the JSON for the whole scene. Kept as a free function in this file
+// rather than a member, because it is only ever used here.
+//
+// `existing` is the document the scene was loaded from, so that any key this
+// build does not understand survives being saved. Only "name", "camera" and
+// "entities" are regenerated. A tool that silently drops the parts of a file
+// it did not understand is a tool people stop trusting with their files.
+Json BuildSceneDocument(Scene& scene, const std::string& sceneName, Vec2 cameraPosition,
+                        float cameraZoom, std::size_t& outSkipped, const Json& existing) {
+    Json root = existing.is_object() ? existing : Json::object();
+
+    root["name"] = sceneName.empty() ? std::string("Untitled") : sceneName;
+    root["camera"]["position"] = Json::array({cameraPosition.x, cameraPosition.y});
+    root["camera"]["zoom"] = cameraZoom;
+
+    // Parent/child relationships are read from the LIVE transform tree, not
+    // from whatever the original file said, so an entity reparented in the
+    // editor saves correctly. This first pass builds a table from each
+    // transform to its entity's name so the second pass can look parents up.
+    std::unordered_map<const Transform2D*, std::string> transformNames;
+    scene.ForEach([&](Entity& entity) { transformNames[&entity.Transform()] = entity.Name(); });
+
+    outSkipped = 0;
+    Json entities = Json::array();
+
+    scene.ForEach([&](Entity& entity) {
+        Json entityJson = Json::object();
+        entityJson["name"] = entity.Name();
+
+        const Transform2D* parent = entity.Transform().Parent();
+        if (parent != nullptr && transformNames.contains(parent)) {
+            entityJson["parent"] = transformNames.at(parent);
+        }
+
+        Json components = Json::array();
+        entity.ForEachComponent([&](Component& component) {
+            Json componentJson = Json::object();
+            if (!component.Serialize(componentJson)) {
+                // Reported, not silently dropped. A save that loses a
+                // component without saying so is worse than one that refuses.
+                ENGINE_LOG_WARN(Channels::kScene,
+                                "saving '{}': the component '{}' cannot be saved and was "
+                                "left out of the file",
+                                entity.Name(), component.TypeName());
+                ++outSkipped;
+                return;
+            }
+            // The "type" key is written HERE rather than by each component, so
+            // no component can get its own name wrong.
+            componentJson["type"] = component.TypeName();
+            components.push_back(std::move(componentJson));
+        });
+
+        entityJson["components"] = std::move(components);
+        entities.push_back(std::move(entityJson));
+    });
+
+    root["entities"] = std::move(entities);
+    return root;
+}
+
+} // namespace
 
 // Builds an empty scene with no entities in it.
 Scene::Scene() = default;
@@ -530,69 +594,6 @@ EntityId Scene::DuplicateEntity(EntityId id, std::string& outError) {
     return copyId;
 }
 
-namespace {
 
-// Builds the JSON for the whole scene. Kept as a free function in this file
-// rather than a member, because it is only ever used here.
-//
-// `existing` is the document the scene was loaded from, so that any key this
-// build does not understand survives being saved. Only "name", "camera" and
-// "entities" are regenerated. A tool that silently drops the parts of a file
-// it did not understand is a tool people stop trusting with their files.
-Json BuildSceneDocument(Scene& scene, const std::string& sceneName, Vec2 cameraPosition,
-                        float cameraZoom, std::size_t& outSkipped, const Json& existing) {
-    Json root = existing.is_object() ? existing : Json::object();
-
-    root["name"] = sceneName.empty() ? std::string("Untitled") : sceneName;
-    root["camera"]["position"] = Json::array({cameraPosition.x, cameraPosition.y});
-    root["camera"]["zoom"] = cameraZoom;
-
-    // Parent/child relationships are read from the LIVE transform tree, not
-    // from whatever the original file said, so an entity reparented in the
-    // editor saves correctly. This first pass builds a table from each
-    // transform to its entity's name so the second pass can look parents up.
-    std::unordered_map<const Transform2D*, std::string> transformNames;
-    scene.ForEach([&](Entity& entity) { transformNames[&entity.Transform()] = entity.Name(); });
-
-    outSkipped = 0;
-    Json entities = Json::array();
-
-    scene.ForEach([&](Entity& entity) {
-        Json entityJson = Json::object();
-        entityJson["name"] = entity.Name();
-
-        const Transform2D* parent = entity.Transform().Parent();
-        if (parent != nullptr && transformNames.contains(parent)) {
-            entityJson["parent"] = transformNames.at(parent);
-        }
-
-        Json components = Json::array();
-        entity.ForEachComponent([&](Component& component) {
-            Json componentJson = Json::object();
-            if (!component.Serialize(componentJson)) {
-                // Reported, not silently dropped. A save that loses a
-                // component without saying so is worse than one that refuses.
-                ENGINE_LOG_WARN(Channels::kScene,
-                                "saving '{}': the component '{}' cannot be saved and was "
-                                "left out of the file",
-                                entity.Name(), component.TypeName());
-                ++outSkipped;
-                return;
-            }
-            // The "type" key is written HERE rather than by each component, so
-            // no component can get its own name wrong.
-            componentJson["type"] = component.TypeName();
-            components.push_back(std::move(componentJson));
-        });
-
-        entityJson["components"] = std::move(components);
-        entities.push_back(std::move(entityJson));
-    });
-
-    root["entities"] = std::move(entities);
-    return root;
-}
-
-} // namespace
 
 } // namespace eng
