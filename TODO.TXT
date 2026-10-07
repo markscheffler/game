@@ -26,13 +26,13 @@ resource/
 scene/
 	component.cpp X
 	deferredops.cpp X
-	entity.cpp 
-	messaging.cpp
-	scene.cpp
-	scriptcomponent.cpp
-	scriptlibrary.cpp
-	spincomponent.cpp
-	systemorder.cpp
+	entity.cpp X
+	messaging.cpp X
+	scene.cpp X
+	scriptcomponent.cpp X
+	scriptlibrary.cpp X
+	spincomponent.cpp X
+	systemorder.cpp X
 
-engine.cpp
+engine.cpp X
 

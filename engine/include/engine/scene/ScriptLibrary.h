@@ -79,6 +79,9 @@ public:
     // because "nothing happens when I press Play" and "no scripts loaded" are
     // the same fact and only one of them tells you what to do.
     static std::size_t ScriptCount();
+
+    bool Init(const BootConfig& config);
+    void Shutdown();
 };
 
 } // namespace eng

@@ -102,6 +102,9 @@ public:
     static void Dispatch();
 
     static void Clear();
+
+    static bool init(const BootConfig& config);
+    static void shutdown();
 };
 
 } // namespace eng
