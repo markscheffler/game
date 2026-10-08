@@ -232,7 +232,7 @@ bool Engine::BeginFrame() {
     }
 
     m_camera.SetViewportSize(sm.GetRenderer()->OutputSize());
-    m_stepsThisFrame - m_clock.BeginFrame(delta);
+    m_stepsThisFrame = m_clock.BeginFrame(delta);
     return !m_quitRequested;
 }
 
