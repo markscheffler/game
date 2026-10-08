@@ -85,7 +85,8 @@ bool Engine::Init(const Options& options) {
     sm.GetResources()->Init();
     sm.GetGizmo()->init(this->Config());
     sm.GetMsgBus()->init(this->Config());
-    
+    sm.GetScriptSys()->Init(this->Config());
+    //Scene Init
    auto& engine = Engine::Get();
     ComponentFactory::RegisterBuiltins();
    CollisionSystem::RegisterComponentTypes();
@@ -96,7 +97,8 @@ bool Engine::Init(const Options& options) {
     SystemScheduler::Register(m_spinSystem.get());
    SystemScheduler::Register(m_scriptsys.get());
     Scene::SetActive(subsystems().GetScene());
-    
+    // End Scene Init
+
     m_clock.Init();
     m_clock.SetFixedStepSeconds(m_config.fixedTimestepSeconds);
     m_clock.SetMaxStepsPerFrame(m_config.maxStepsPerFrame);

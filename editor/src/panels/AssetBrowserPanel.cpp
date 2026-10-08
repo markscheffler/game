@@ -15,6 +15,9 @@
 #include <algorithm>
 #include <cstdio>
 
+
+
+
 namespace editor {
 namespace {
 
@@ -143,9 +146,14 @@ void AssetBrowserPanel::DrawBreadcrumb() {
     ImGui::SameLine();
     ImGui::BeginDisabled(!ScriptBuild::HasCompiler());
     if (ImGui::SmallButton("Build Scripts")) {
-        const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
+       const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
+
+       //auto result = pool.submit(ScriptBuild::BuildAndReload);
+
+
         std::snprintf(m_status, sizeof(m_status), "%s", result.summary.c_str());
         Refresh();
+        
     }
     ImGui::EndDisabled();
     if (ImGui::IsItemHovered()) {

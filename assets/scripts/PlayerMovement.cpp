@@ -20,8 +20,8 @@
 //
 //    OnStart()            Once, on the first simulation step after this script
 //                         is attached and its entity is fully built. NOT at
-//                         attach time: while a scene loads, components are
-//                         attached one at a time, so another component you look
+//                         attach time: while a scene loads, components are 
+//                         attached one at a time, so another component you look 
 //                         for at attach time may not exist yet.
 //
 //    OnUpdate(dt)         Every FIXED simulation step. NOT once per drawn frame -

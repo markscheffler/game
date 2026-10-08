@@ -17,6 +17,7 @@
 #include <engine/scene/Messaging.h>
 #include <engine/scene/Scene.h>
 #include <engine/scene/ScriptComponent.h>
+#include <engine/scene/ScriptLibrary.h>
 
 namespace eng {
 
@@ -37,7 +38,7 @@ public:
         m_resources{std::make_unique<ResourceManager>()},
           m_gizmos{std::make_unique<Gizmos>()}, 
         m_msg{std::make_unique<MessageBus>()},
-          m_scripts{std::make_unique<ScriptSystem>()},
+          m_scripts{std::make_unique<ScriptLibrary>()},
         m_scene{std::make_unique<Scene>()},
           m_collision{std::make_unique<CollisionSystem>()}
  {
@@ -82,7 +83,7 @@ public:
     ResourceManager* GetResources()     const { return m_resources.get(); }
     Gizmos* GetGizmo()                  const { return m_gizmos.get(); }
     MessageBus* GetMsgBus()             const { return m_msg.get(); }
-    ScriptSystem* GetScriptSys()        const { return m_scripts.get(); }
+    ScriptLibrary* GetScriptSys()        const { return m_scripts.get(); }
     Scene* GetScene()                   const { return m_scene.get(); }
     CollisionSystem* GetCollisionSys()  const { return m_collision.get(); }
 
@@ -121,7 +122,7 @@ private:
     std::unique_ptr<ResourceManager> m_resources;
     std::unique_ptr<Gizmos> m_gizmos;
     std::unique_ptr<MessageBus> m_msg;
-    std::unique_ptr<ScriptSystem> m_scripts;
+    std::unique_ptr<ScriptLibrary> m_scripts;
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<CollisionSystem> m_collision;
 };

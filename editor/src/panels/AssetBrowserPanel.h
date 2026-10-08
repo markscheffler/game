@@ -43,6 +43,8 @@
 #include <string>
 #include <vector>
 
+#include <engine/core/ThreadPool.h>
+
 namespace editor {
 
 class AssetBrowserPanel final : public Panel {
@@ -86,6 +88,8 @@ private:
     bool  m_openNewFolder     = false;
     char  m_status[256]       = {};
     float m_iconSize          = 72.0f;
+
+    fire::ThreadPool pool;
 };
 
 } // namespace editor
