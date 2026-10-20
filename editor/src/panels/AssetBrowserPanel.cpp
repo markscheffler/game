@@ -18,6 +18,7 @@
 #include <engine/core/Task.h>
 
 
+
 namespace editor {
 namespace {
 
@@ -372,14 +373,17 @@ bool AssetBrowserPanel::CreateScript(const std::string& name, std::string& outEr
     // moment is a script that appears not to work. Building it now means the
     // class exists by the time you have finished reading the file, and it
     // turns up in the Inspector's script list immediately.
-    const ScriptBuild::Result build = ScriptBuild::BuildAndReload();
-    if (!build.ok) {
+    // 
+    //const ScriptBuild::Result build = ScriptBuild::BuildAndReload();
+    auto build = buildscripts();
+
+    if (!build.h.promise().value.ok) {
         // Not a failure of CreateScript - the file was written and is fine.
         // The template compiles, so a failure here is almost always another
         // script that was already broken.
         ENGINE_LOG_WARN(eng::Channels::kEditor,
                         "'{}' was created, but the project's scripts did not build: {}",
-                        path, build.summary);
+                        path, build.h.promise().value.summary.c_str());
     }
     return true;
 }

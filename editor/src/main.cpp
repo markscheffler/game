@@ -19,6 +19,8 @@
 #include <cstdio>
 #include <cstring>
 
+#include <engine/core/Task.h>
+
 namespace {
 
 // --build-scripts: compile the project's scripts and exit, without opening a
@@ -28,6 +30,11 @@ namespace {
 // focus, so this exists for the times there is nobody to press anything - a
 // freshly cloned project, or an automated build that wants the library to be
 // there before it runs the game.
+
+
+    static Coroutine<editor::ScriptBuild::Result> buildscripts() {
+    co_await BuildSciptsAwaitable(editor::ScriptBuild::BuildAndReload);
+}
 int BuildScriptsAndExit() {
     // Only the two pieces this actually needs, started by hand: somewhere to
     // write messages, and the ability to turn a virtual path into a real one.
@@ -39,13 +46,17 @@ int BuildScriptsAndExit() {
     eng::FileSystem::Init(eng::BootConfig{});
 
     editor::ScriptBuild::Init();
-    const editor::ScriptBuild::Result result = editor::ScriptBuild::BuildAndReload();
+    //const editor::ScriptBuild::Result result = editor::ScriptBuild::BuildAndReload();
+    auto result = buildscripts();
 
     eng::Log::Shutdown();
-    return result.ok ? 0 : 1;
+    return result.h.promise().value.ok ? 0 : 1;
 }
 
 } // namespace
+
+
+
 
 int main(int argc, char** argv) {
     // The editor takes at most one option, so there is no argument loop to

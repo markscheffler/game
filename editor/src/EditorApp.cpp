@@ -326,6 +326,12 @@ void EditorApp::FocusGameViewIfRequested() {
     ImGui::SetWindowFocus(m_gamePanel->Title());
 }
 
+#include <engine/core/Task.h>
+
+static Coroutine<ScriptBuild::Result> buildscripts() {
+    co_await BuildSciptsAwaitable(ScriptBuild::BuildAndReload);
+}
+
 void EditorApp::RebuildScriptsIfChanged() {
     if (!ScriptBuild::NeedsRebuild()) {
         return;   // the usual case, and it costs only a few timestamp checks
@@ -345,12 +351,13 @@ void EditorApp::RebuildScriptsIfChanged() {
         engine.ExitPlayMode();
     }
 
-    const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
-    std::snprintf(m_status, sizeof(m_status), "%s", result.summary.c_str());
+    //const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
+    auto result = buildscripts();
+    std::snprintf(m_status, sizeof(m_status), "%s", result.h.promise().value.summary.c_str());
 
     // A failed build is worth putting in front of somebody rather than leaving
     // in the Console - the scripts that were running have just stopped.
-    m_scriptBuildFailed = !result.ok;
+    m_scriptBuildFailed = !result.h.promise().value.ok;
 
     // Push the log to disk now rather than letting it sit in the buffer.
     //
