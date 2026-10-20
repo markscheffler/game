@@ -15,11 +15,13 @@
 #include <algorithm>
 #include <cstdio>
 
-
+#include <engine/core/Task.h>
 
 
 namespace editor {
 namespace {
+
+
 
 // ONE root: assets/. Scenes, images and scripts all live in it, in whatever
 // folder structure suits the game.
@@ -100,6 +102,12 @@ void AssetBrowserPanel::Refresh() {
     }
 }
 
+
+ static Coroutine<ScriptBuild::Result> buildscripts() {
+    co_await BuildSciptsAwaitable(ScriptBuild::BuildAndReload);
+      
+}
+
 void AssetBrowserPanel::DrawBreadcrumb() {
     ImGui::BeginDisabled(m_directory == kRootAssets);
     if (ImGui::SmallButton("assets")) {
@@ -143,15 +151,18 @@ void AssetBrowserPanel::DrawBreadcrumb() {
     // regains focus, but having a button matters: it makes the step visible
     // rather than magic, and it gives you a way to retry after fixing a
     // compile error without alt-tabbing out and back.
+
+  
+
     ImGui::SameLine();
     ImGui::BeginDisabled(!ScriptBuild::HasCompiler());
     if (ImGui::SmallButton("Build Scripts")) {
-       const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
+        //ScriptBuild::Result result = ScriptBuild::BuildAndReload();
 
-       //auto result = pool.submit(ScriptBuild::BuildAndReload);
+        auto result = buildscripts();
 
-
-        std::snprintf(m_status, sizeof(m_status), "%s", result.summary.c_str());
+        std::snprintf(m_status, sizeof(m_status), "%s",
+                      result.h.promise().value.summary.c_str());
         Refresh();
         
     }

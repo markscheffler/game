@@ -44,11 +44,15 @@
 #include <vector>
 
 #include <engine/core/ThreadPool.h>
+#include <engine/core/Task.h>
+
+
 
 namespace editor {
 
 class AssetBrowserPanel final : public Panel {
 public:
+    
     AssetBrowserPanel();
 
     const char* Title() const override { return "Assets"; }
@@ -89,7 +93,7 @@ private:
     char  m_status[256]       = {};
     float m_iconSize          = 72.0f;
 
-    fire::ThreadPool pool;
+
 };
 
 } // namespace editor
