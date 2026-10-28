@@ -1,5 +1,5 @@
 // =============================================================================
-//  Test - a script.
+//  gun - a script.
 //
 //  Attach it by dragging this file from the Assets panel onto an entity in the
 //  Hierarchy or the Inspector.
@@ -74,10 +74,10 @@ using namespace eng;
 
 namespace {
 
-class Test final : public ScriptBehaviour {
+class gun final : public ScriptBehaviour {
 public:
     void OnStart() {
-        ENGINE_LOG_INFO(Channels::kGame, "Test started on '{}'",
+        ENGINE_LOG_INFO(Channels::kGame, "gun started on '{}'",
                         Owner() != nullptr ? Owner()->Name() : "<none>");
     }
 
@@ -95,7 +95,7 @@ public:
     }
 
     void OnDestroy() {
-        ENGINE_LOG_INFO(Channels::kGame, "Test lived {:.2f} seconds",
+        ENGINE_LOG_INFO(Channels::kGame, "gun lived {:.2f} seconds",
                         m_secondsAlive);
     }
 
@@ -107,7 +107,7 @@ public:
             return;
         }
         const Entity* partner = scene->Get(other);
-        ENGINE_LOG_INFO(Channels::kGame, "Test touched '{}'",
+        ENGINE_LOG_INFO(Channels::kGame, "gun touched '{}'",
                         partner != nullptr ? partner->Name() : "<already gone>");
     }
 
@@ -117,6 +117,6 @@ private:
 
 } // namespace
 
-// Registers the name "Test" so that a scene file and the editor can find it.
+// Registers the name "gun" so that a scene file and the editor can find it.
 // WITHOUT THIS LINE the file compiles and the script can never be attached.
-ENGINE_REGISTER_SCRIPT(Test)
+ENGINE_REGISTER_SCRIPT(gun)

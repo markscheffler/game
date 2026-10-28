@@ -330,6 +330,12 @@ void EditorApp::FocusGameViewIfRequested() {
 
 static Coroutine<ScriptBuild::Result> buildscripts() {
     co_await BuildSciptsAwaitable(ScriptBuild::BuildAndReload);
+  
+}
+
+static Coroutine<ScriptBuild::Result> Build()
+{
+    co_await PerformTask(ScriptBuild::BuildAndReload);
 }
 
 void EditorApp::RebuildScriptsIfChanged() {
@@ -352,7 +358,7 @@ void EditorApp::RebuildScriptsIfChanged() {
     }
 
     //const ScriptBuild::Result result = ScriptBuild::BuildAndReload();
-    auto result = buildscripts();
+    auto result = Build();
     std::snprintf(m_status, sizeof(m_status), "%s", result.h.promise().value.summary.c_str());
 
     // A failed build is worth putting in front of somebody rather than leaving

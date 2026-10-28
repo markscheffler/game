@@ -4,7 +4,51 @@
 #include <functional>
 #include <thread>
 #include <utility>
+#include <print>
+#include <tuple>
+#include <type_traits>
 
+template<class F, class... Args>
+struct PerformTask
+{
+    F function;
+    std::tuple<Args...> params;
+
+    PerformTask(F f, Args... args)
+        : function(std::forward<F>(f)),
+        params(std::make_tuple(std::forward<Args...>(args)...))
+    {}
+
+    using ReturnType = std::invoke_result_t<F, Args...>();
+    //using Type = std::conditional_t<std::is_void_v<ReturnType>, void, ReturnType>;
+    
+    ReturnType value;
+
+        auto await_ready() noexcept { return false; }
+        auto await_suspend(std::coroutine_handle<> handle) noexcept
+        {
+            if constexpr (std::is_void_v<ReturnType>)
+            {
+                std::thread([handle, *this]() 
+                { 
+                    std::apply(function, params);
+                }
+            
+            ).detach();
+
+            }
+            else
+            {
+                std::thread([handle, *this]()
+                    {
+                       std::apply(function, params);
+                    }
+                ).detach();
+            }
+        }
+
+        auto await_resume() noexcept {}
+};
 
 template<typename F>
 struct BuildSciptsAwaitable 
@@ -19,7 +63,9 @@ struct BuildSciptsAwaitable
     auto await_ready() noexcept { return false; }
     auto await_suspend(std::coroutine_handle<> handle) noexcept
     {
-        std::thread([handle, *this]() { func_();
+        std::thread([handle, *this]() { 
+            std::println("creating thread id: {} ", std::this_thread::get_id());
+            func_();
         }).detach();
     }
     void await_resume() noexcept
@@ -47,12 +93,15 @@ struct Coroutine
             return {};
         }
 
-        T return_value(T v) {
+        void return_value(T v) {
             value = std::move(v);
             return {};
         }
+        
     };
     std::coroutine_handle<promise_type> h{};
+
+ 
 
     ~Coroutine() {
         if (h)

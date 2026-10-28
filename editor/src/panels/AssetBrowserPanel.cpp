@@ -161,7 +161,7 @@ void AssetBrowserPanel::DrawBreadcrumb() {
         //ScriptBuild::Result result = ScriptBuild::BuildAndReload();
 
         auto result = buildscripts();
-
+       
         std::snprintf(m_status, sizeof(m_status), "%s",
                       result.h.promise().value.summary.c_str());
         Refresh();
